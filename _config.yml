@@ -5,11 +5,11 @@
 # Site
 title: 欢迎来到杉菜酱子_的碎碎念~
 subtitle: --《酱子有话说》独家栏目出品
-description: ''
+description: ""
 keywords:
 author: 杉菜酱子_
 language: zh-CN
-timezone: ''
+timezone: ""
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -30,7 +30,7 @@ category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
 skip_render:
-  - "md_editor/**"   # 忽略 md_editor
+  - "md_editor/**" # 忽略 md_editor
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
@@ -38,7 +38,7 @@ titlecase: false # Transform title into titlecase
 external_link:
   enable: true # Open external links in new tab
   field: site # Apply to the whole site
-  exclude: ''
+  exclude: ""
 filename_case: 0
 render_drafts: false
 post_asset_folder: true
@@ -48,14 +48,14 @@ highlight:
   enable: true
   line_number: false
   auto_detect: false
-  tab_replace: ''
+  tab_replace: ""
   wrap: true
   hljs: false
 prismjs:
   enable: false
   preprocess: true
   line_number: true
-  tab_replace: ''
+  tab_replace: ""
 # Local search 本地搜索
 local_search:
   enable: true
@@ -68,7 +68,7 @@ local_search:
 # per_page: Posts displayed per page. (0 = disable pagination)
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
-  path: ''
+  path: ""
   per_page: 10
   order_by: -date
 # 图片懒加载
@@ -92,7 +92,7 @@ meta_generator: true
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
 ## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
+updated_option: "mtime"
 
 # Pagination
 ## Set per_page to 0 to disable pagination
@@ -122,14 +122,28 @@ deploy:
   branch: master
 #aplayer
 aplayer:
-  script_dir: js                      # Public 目录下脚本目录路径，默认: 'assets/js'
-  style_dir: css                         # Public 目录下样式目录路径，默认: 'assets/css'
+  script_dir: js # Public 目录下脚本目录路径，默认: 'assets/js'
+  style_dir: css # Public 目录下样式目录路径，默认: 'assets/css'
   #cdn: http://xxx/aplayer.min.js                # 引用 APlayer.js 外部 CDN 地址 (默认不开启)
   #style_cdn: http://xxx/aplayer.min.css         # 引用 APlayer.css 外部 CDN 地址 (默认不开启)
-  meting: true                                  # MetingJS 支持
+  meting: true # MetingJS 支持
   #meting_api: http://xxx/api.php                # 自定义 Meting API 地址
   #meting_cdn: http://xxx/Meing.min.js           # 引用 Meting.js 外部 CDN 地址 (默认不开启)
-  asset_inject: true                            # 自动插入 Aplayer.js 与 Meting.js 资源脚本, 默认开启
+  asset_inject: true # 自动插入 Aplayer.js 与 Meting.js 资源脚本, 默认开启
   #externalLink: http://xxx/aplayer.min.js       # 老版本参数，功能与参数 cdn 相同meting: true
-
+live2d:
+  enable: true
+  scriptFrom: local # 默认
+  tagMode: false # 标签模式, 是否仅替换 live2d tag标签而非插入到所有页面中
+  debug: false # 调试, 是否在控制台输出日志
+  model:
+    use: live2d-widget-model-shizuku #模型选择
+  display:
+    position: right #模型位置
+    width: 150 #模型宽度
+    height: 300 #模型高度
+    hOffset: 20
+    vOffset: -20
+  mobile:
+    show: false #是否在手机端显示
 
