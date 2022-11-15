@@ -1,0 +1,42 @@
+language: node_js #指定使用的语言
+
+node_js: stable  #采用nodejs的最新版本
+
+# 指定缓存模块，可选。缓存可加快编译速度。
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - export TZ='Asia/Shanghai' # 更改时区
+
+# Start: Build Lifecycle
+install:
+  - npm install
+
+# 执行清缓存，生成网页操作
+script:
+  - hexo clean
+  - hexo generate
+
+# 指定博客分支
+branches:
+  only:
+    - blog-source #触发持续集成的分支
+
+# 指定博客的仓库地址
+env:
+  global:
+    - GH_REF: git@github.com:coder-fang/coder-fang.git
+    - GE_REF: git@gitee.com:coder-fang/coder-fang.git
+
+# 设置git提交名，邮箱；替换真实token到_config.yml文件，最后depoy部署
+after_script:
+  - cd ./public
+  - git init
+  - git config user.name "coder-fang"
+  - git config user.email "1846015350@qq.com"
+  - git add .
+  - git commit -m "TravisCI 自动部署"
+  - git push --force --quiet "https://${GITHUB_TOKEN}@${GH_REF}" master:main
+  - git push --force --quiet "https://${GE_USERNAME}:${GE_PASSWORD}@${GE_REF}" master:main

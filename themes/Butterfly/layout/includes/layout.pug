@@ -6,6 +6,10 @@ doctype html
 html(lang=config.language data-theme=theme.display_mode)
   head
     include ./head.pug
+     link(rel="stylesheet" href="APlayer.min.css")
+     div(id="aplayer")
+     script(src="https://cdn.jsdelivr.net/gh/radium-bit/res@master/live2d/autoload.js" async)
+     script(src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js" async)
   body
     if theme.preloader
       !=partial('includes/loading/loading', {}, {cache:theme.fragment_cache})
@@ -37,7 +41,7 @@ html(lang=config.language data-theme=theme.display_mode)
             div!= body
           else
             block content
-      
+
       - var footer_bg = theme.footer_bg == false ? '' : bg_img
       - var is_bg = theme.footer_bg == false ? 'color' : 'photo'
       footer#footer(style=footer_bg data-type=is_bg)

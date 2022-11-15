@@ -744,6 +744,7 @@ inject:
   # - <link rel="stylesheet" href="/xxx.css">
   bottom:
     # - <script src="xxxx"></script>
+    - <div class="aplayer no-destroy" data-id="000PeZCQ1i4XVs" data-server="tencent" data-type="artist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-preload="none" data-autoplay="true" muted></div>
 
 # CDN
 # Don't modify the following settings unless you know how they work
@@ -825,3 +826,20 @@ CDN:
   aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
   aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
   meting_js: https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js
+
+# 启用吸底aplayer
+aplayer:
+  enable: true
+  js:
+    - https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.js
+    - https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js
+  css:
+    - https://cdn.bootcss.com/aplayer/1.10.1/APlayer.min.css
+  id: 7118777046
+  server: netease
+  type: playlist
+  fixed: 'true'
+  order: random
+  preload: none
+  listFolded: 'false'
+pjax: true
