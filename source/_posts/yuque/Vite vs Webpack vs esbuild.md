@@ -59,4 +59,4 @@ Vite 在打包时，将模块分成两个区域`依赖`和`源码`：
 
 原因如下图：
 第一张图，是以前的打包模式，
-{% qnimg bundle01.png %}
+![1668601120853_43F96D26-9591-4a51-926F-A76249646CD6.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1668606127115-567c8a0b-dc4a-4546-bc92-3cd841e9ad03.png#averageHue=%232f3741&clientId=u0058c815-b7e9-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=408&id=uf56b9e97&margin=%5Bobject%20Object%5D&name=1668601120853_43F96D26-9591-4a51-926F-A76249646CD6.png&originHeight=408&originWidth=732&originalType=binary&ratio=1&rotation=0&showTitle=false&size=55374&status=done&style=none&taskId=ubb96c9f1-fe8c-4837-83ee-2e3d29343fb&title=&width=732)
