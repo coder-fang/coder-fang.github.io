@@ -1,7 +1,7 @@
 ---
 title: JS高频面试题
 categories:  JS
-tags:  [JS]
+tags:  JS
 ---
 
 ## app、call、bind 的区别
