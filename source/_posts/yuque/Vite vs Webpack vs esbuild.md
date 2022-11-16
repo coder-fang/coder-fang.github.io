@@ -54,4 +54,9 @@ export const sub = (a, b) => a - b;
 
 Vite 在打包时，将模块分成两个区域`依赖`和`源码`：
 
--
+- 依赖：一般是那种在开发中不会改变的 JS，比如组件库，或者一些较大的依赖（可能有上百个模块的库），这一部分使用 esbuild 来进行预构建依赖，esbuild 使用的是 Go 进行编写，比 JS 编写的打包器预构建依赖快 10-100 倍。
+- 源码：一般是那种修改几率比较大的文件，例如 JSX、CSS、Vue 这些需要转换且时常会被修改编辑的文件。同时这些文件不是一下子全部加载，而是可以按需加载（例如路由懒加载）。Vite 会将文件转换后，以`ES Module`的方式直接交给浏览器，因为现在的浏览器大多数都直接支持 es module，这使性能提高很多。
+
+原因如下图：
+第一张图，是以前的打包模式，
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1668598975185-3ac3527e-bd94-48e0-ad1f-f6d01af88c0b.png#averageHue=%232f3741&clientId=u0058c815-b7e9-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=408&id=ud5cb5a4e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=408&originWidth=732&originalType=binary&ratio=1&rotation=0&showTitle=false&size=57687&status=done&style=none&taskId=u48452d1e-8249-4be4-a84c-1ae0606ec6b&title=&width=732)
