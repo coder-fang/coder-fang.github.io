@@ -4,7 +4,7 @@ categories:  JS
 tags:  JS
 ---
 
-## app、call、bind 的区别
+## apply、call、bind 的区别
 
 - 三者都可以改变函数的 this 对象指向
 - 三者第一个参数都是 this 要指向的对象，如果如果没有这个参数或参数为 undefined 或 null，则默认指向全局 window
