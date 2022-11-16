@@ -1,6 +1,6 @@
 #!/bin/bash
 echo 
-cd F:\hexo个人博客\Hexo
+cd F:\hexo-blog\Hexo
 npm start
 
 git add .
