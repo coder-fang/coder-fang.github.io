@@ -171,3 +171,23 @@ live2d:
 #     - descr: 碎碎念
 #       cover: https://assets.akilar.top/image/cover6.webp
 #   custom_css: https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css
+qiniu:
+  offline: false
+  sync: true
+  bucket: [rlfw1cx1s.bkt.clouddn.com]
+  # secret_file: sec/qn.json or C: # 这行代码最好注释，否则会报错
+  # 在 [个人面板——密钥管理] 里面你可以找到你下面这两对密钥
+  access_key: [5-zfSCqqTf0har-UXyTjntqSCXXgUSyL7kQ4cCFO]  
+  secret_key: [a1YJYtH64bN61TAgl0CAT6WA0qAzlCLEslBkxopo]
+  dirPrefix: static # "这个是七牛的目录名，七牛存储空间没有显示的目录。所谓目录，就是在指定访问域名后面先加上你的目录名，再加上你上传的图片名，这样就相当于目录了，来区分图片的分类。"
+  urlPrefix: [http://rlfw1cx1s.bkt.clouddn.com]/[static] # "这里第一个位置填写刚才系统分配给你的域名，第二个位置填写上一行的 dirPrefix 的内容。"
+  up_host: http://upload.qiniu.com 	# "华东区为这个默认访问域名，具体可以查看 https://developer.qiniu.com/kodo/manual/1671/region-endpoint 这个网址。"
+  local_dir: static # "在hexo主目录下将会自动创建的你的文件同步文件夹名，可以自定义。"
+  update_exist: true
+  image: 
+    folder: images
+    extend: 
+  js:
+    folder: js
+  css:
+    folder: css
