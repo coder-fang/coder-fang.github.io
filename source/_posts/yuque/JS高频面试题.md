@@ -384,4 +384,113 @@ WeakMap 对象也是一组键值对的集合，其中的键是**弱引用**。**
 - Map 数据结构，类似于对象，也是键值对的集合，但是“键”的范围**不限于**字符串，各种类型的值（包括对象）都可以作为键。
 - WeakMap 结构与 Map 结构类似，也是用于生成键值对的集合。但是 WeakMap**只接受对象作为键名**（null 除外），不接受其他类型的值作为键名。**而且 WeakMap 的键名所指向的对象是弱引用，不计入垃圾回收机制。**
 
-##
+## JS 内置对象
+
+全局的对象（global objects）或称标准内置对象。即全局作用域中的对象，全局作用域中的其他对象可以由用户的脚本创建或由宿主程序提供。
+
+### 标准内置对象的分类
+
+1. 值属性：这些全局属性返回一个简单值，这些值没有自己的属性和方法。
+
+如：Infinity、NaN、undefined、null 字面量。
+
+2. 函数属性：全局属性可以直接调用，不需要再调用时指定所属对象，执行结束后会将结果直接返回给调用者。
+
+如：eval()、parseFloat()、parseInt()等。
+
+3. 基本对象：是定义或使用其他对象的基础。包括一般对象、函数对象和错误对象。
+
+如：Object、Function、Boolean、Symbol、Error 等。
+
+4. 数字和日期对象：用来表示数字、日期和执行数学计算的对象。
+
+如：Number、Math、Date。
+
+5. 字符串：用来表示和操作字符串的对象。
+
+如：String、RegExp
+
+6. 可索引的集合对象，这些对象表示按照索引值来排序的数据集合，包括数组和类型数组，以及类数组结构的对象。
+
+如：Array。
+
+7. 使用键的集合对象：这些集合对象在存储时会使用到键，支持按照插入顺序来迭代元素。
+
+如：Map、Set、WeakMap、WeakSet。
+
+8. 矢量集合：SIMD 矢量集合中的数据会被组织为一个数据序列。
+
+如：SIMD 等。
+
+9. 结构化数据：这些对象用来表示和操作结构化的缓冲区数据，或使用 JSON 编码的数据。
+
+如：JSON 数据。
+
+10. 控制抽象对象。如：Promise、Generator 等。
+11. 反射。如：Reflect、Proxy。
+12. 国际化：为了支持多语言处理而加入的 ECMAScript 的对象。
+
+如：Intl、Intl.Collator 等。
+
+13. WebAssembly
+14. 其他。如 arguments
+
+### 总结
+
+1. JS 中的内置对象主要指的是在程序执行前存在全局作用域中的由 JS 定义的一些全局值属性、函数和用来实例化其他对象的构造函数对象。
+2. 一般经常用到的如 全局变量值 NaN、undefined，全局函数如 parseInt()、parseFloat() 用来实例化对象的构造函数 如 Date、Object 等，还有提供数学计算的单体内置对象如 Math 对象等。
+
+## JS 脚本延迟加载的方式
+
+- defer：异步加载，延迟执行（html 加载完再执行）
+- async：异步加载，加载完立即执行（会阻塞 html 页面解析）
+- 动态创建 DOM 方式：对文档加载事件进行监听，当文档加载完后，再动态创建 script 标签来引入 JS 脚本。
+- setTimeout 延迟方法：设置一个定时器来延迟加载 JS 脚本文件
+- 让 JS 最后加载：将 JS 脚本文件放在文档底部，来使 JS 脚本尽可能最后加载执行。
+
+## JS 类数组对象
+
+JS 类数组对象：一个拥有 length 属性和若干索引属性的对象。
+和数组类似，但不能调用数组的方法。
+常见的类数组对象有：
+
+- argument 和 DOM 方法的返回结果
+- 函数（因为含有 length 属性值，代表可接收的参数个数）
+
+类数组转换为数组的方法：
+
+1. 通过 call 调用数组的 slice 方法来实现转换
+
+```javascript
+Array.prototype.slice.call(arrayLike);
+```
+
+2. 通过 call 调用数组的 splice 方法来实现转换
+
+```javascript
+Array.prototype.splice.call(arrayLike, 0);
+```
+
+3. 通过 apply 调用数组的 concat 方法来实现转换
+
+```javascript
+Array.prototype.concat.apply([], arrayLike);
+```
+
+4. 通过 Array.from() 实现转换
+
+```javascript
+Array.from(arrayLike);
+```
+
+## 数组有哪些原生方法
+
+- 数组和字符串的转换方法：toString()、toLocalString()、join()，其中 join()可以指定转换为字符串时的分隔符
+- 数组尾部操作的方法：pop()和 push()，push() 方法可以传入多个参数
+- 数组首部操作的方法：shift() 删除和 unshift() 添加
+- 重排序的方法：reverse() 和 sort()，sort() 可传入一个函数进行比较，传入前后两个值，如果返回值为正数，则交换两个参数的位置
+- 数组连接：concat() 返回拼接好的数组，不影响原数组。
+- 数组截取：splice()
+- 影响原数组特定项的索引的方法，indexOf()和 lastIndexOf()
+- 迭代方法：every()、some()、filter()、map()、forEach()方法
+- 数组归并方法：reduce()、reduceRight()方法
