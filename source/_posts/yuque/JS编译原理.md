@@ -4,6 +4,7 @@ categories: 前端进阶
 date: 2022-11-11
 updated: 2022-11-11
 tags: [JS, 编译原理]
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Finews.gtimg.com%2Fnewsapp_bt%2F0%2F13950614620%2F1000&refer=http%3A%2F%2Finews.gtimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1671266998&t=597dab5f07b85703e3f345e9d9b074a1
 ---
 
 ## JS 编译原理
