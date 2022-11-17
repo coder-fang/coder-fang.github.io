@@ -1,7 +1,8 @@
 ---
 title: JS高频面试题
-categories:  JS
-tags:  JS
+categories: JS
+date: 2022-11-13
+tags: JS
 ---
 
 ## apply、call、bind 的区别
