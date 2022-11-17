@@ -1,7 +1,8 @@
 ---
 title: Vite vs Webpack vs esbuild
-categories:  前端工程化
-tags:  [Vite,Webpack,Esbuild]
+categories: 前端工程化
+date: 2022-11-01
+tags: [Vite, Webpack, Esbuild]
 ---
 
 # Vite 和 Webpack 之对比
