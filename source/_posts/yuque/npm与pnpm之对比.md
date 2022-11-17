@@ -4,6 +4,7 @@ categories: 知识
 date: 2022-11-04
 updated: 2022-11-04
 tags: [前端工程化]
+cover: https://img1.baidu.com/it/u=3855543578,1499410100&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=320
 ---
 
 ## pnpm 中的问题
