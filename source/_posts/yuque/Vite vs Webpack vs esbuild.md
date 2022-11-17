@@ -4,6 +4,7 @@ categories: 前端工程化
 date: 2022-11-01
 updated: 2022-11-01
 tags: [Vite, Webpack, Esbuild]
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp2.itc.cn%2Fimages01%2F20210623%2F9a91d9e5d6db4fefbc90e6d79dc23ba5.png&refer=http%3A%2F%2Fp2.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1671267898&t=1619e8d6ed4ddf8d7ce4d141972652b2
 ---
 
 # Vite 和 Webpack 之对比
