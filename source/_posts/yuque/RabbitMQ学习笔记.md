@@ -4,6 +4,7 @@ categories: 知识
 updated: 2021-11-05
 date: 2021-11-05
 tags: [RabbitMQ, 消息中间件]
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimage.bubuko.com%2Finfo%2F201910%2F20191018012402811963.png&refer=http%3A%2F%2Fimage.bubuko.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1671267173&t=5d1df4c7b1043f63bcf583ceffddf4d3
 ---
 
 ![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1630671540955-650bc67f-569a-4cef-a095-ec73a3b34897.png#clientId=uc20dad1f-a2b4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=740&id=u64b4ea35&margin=%5Bobject%20Object%5D&name=image.png&originHeight=740&originWidth=1340&originalType=binary&ratio=1&rotation=0&showTitle=false&size=584856&status=done&style=none&taskId=u20a11e76-4e9c-49b4-8ca4-cc25eac0808&title=&width=1340#averageHue=%23efe7e7&crop=0&crop=0&crop=1&crop=1&id=FmDdj&originHeight=740&originWidth=1340&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
@@ -1567,7 +1568,7 @@ public class SwaggerConfig {
 }
 ```
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638490298754-a2b1ced5-676b-4f68-86e0-31f05266088f.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=215&id=u8ba627f6&margin=%5Bobject%20Object%5D&name=image.png&originHeight=215&originWidth=1100&originalType=binary&ratio=1&rotation=0&showTitle=false&size=132048&status=done&style=none&taskId=ud9c3f28a-b8df-44d1-b9df-dc90c70e046&title=&width=1100#crop=0&crop=0&crop=1&crop=1&id=Iv7m8&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
+![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638490298754-a2b1ced5-676b-4f68-86e0-31f05266088f.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=215&id=u8ba627f6&margin=%5Bobject%20Object%5D&name=image.png&originHeight=215&originWidth=1100&originalType=binary&ratio=1&rotation=0&showTitle=false&size=132048&status=done&style=none&taskId=ud9c3f28a-b8df-44d1-b9df-dc90c70e046&title=&width=1100#averageHue=%23f9f8f6&crop=0&crop=0&crop=1&crop=1&id=Iv7m8&originHeight=215&originWidth=1100&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
 
 4. 声明队列配置文件：
 
@@ -1737,11 +1738,11 @@ public class SendMsgController {
 
 访问：[http://localhost:8080/ttl/sendMsg/](http://localhost:8080/ttl/sendMsg/)嘻嘻嘻
 控制台打印结果：
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638494307481-a59aaddb-4efb-4200-9e05-0e34602ded36.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=202&id=u66541ef9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=202&originWidth=1365&originalType=binary&ratio=1&rotation=0&showTitle=false&size=62756&status=done&style=none&taskId=ua128108f-eaa5-47fc-ab0d-e56fe3f57f4&title=&width=1365#crop=0&crop=0&crop=1&crop=1&id=tO8el&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
+![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638494307481-a59aaddb-4efb-4200-9e05-0e34602ded36.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=202&id=u66541ef9&margin=%5Bobject%20Object%5D&name=image.png&originHeight=202&originWidth=1365&originalType=binary&ratio=1&rotation=0&showTitle=false&size=62756&status=done&style=none&taskId=ua128108f-eaa5-47fc-ab0d-e56fe3f57f4&title=&width=1365#averageHue=%23333e45&crop=0&crop=0&crop=1&crop=1&id=tO8el&originHeight=202&originWidth=1365&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
 
 #### 延迟队列优化：
 
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638494906968-c2a2e16a-a5b3-4c44-83bc-5846e35977d0.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=333&id=u5def25ea&margin=%5Bobject%20Object%5D&name=image.png&originHeight=333&originWidth=1070&originalType=binary&ratio=1&rotation=0&showTitle=false&size=169463&status=done&style=none&taskId=uede9888d-c22a-46c9-a810-c9c1899d23a&title=&width=1070#crop=0&crop=0&crop=1&crop=1&id=PCbH9&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
+![image.png](https://cdn.nlark.com/yuque/0/2021/png/2324645/1638494906968-c2a2e16a-a5b3-4c44-83bc-5846e35977d0.png#clientId=u7522214d-0203-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=333&id=u5def25ea&margin=%5Bobject%20Object%5D&name=image.png&originHeight=333&originWidth=1070&originalType=binary&ratio=1&rotation=0&showTitle=false&size=169463&status=done&style=none&taskId=uede9888d-c22a-46c9-a810-c9c1899d23a&title=&width=1070#averageHue=%23faf9f8&crop=0&crop=0&crop=1&crop=1&id=PCbH9&originHeight=333&originWidth=1070&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
 增加一个 QC 普通队列声明后并绑定交换机 XC。
 队列配置 中添加：
 
