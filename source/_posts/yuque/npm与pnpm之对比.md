@@ -2,6 +2,7 @@
 title: npm与pnpm之对比
 categories: 知识
 date: 2022-11-04
+updated: 2022-11-04
 tags: [前端工程化]
 ---
 
