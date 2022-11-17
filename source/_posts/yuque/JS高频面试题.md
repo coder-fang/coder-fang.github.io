@@ -4,6 +4,7 @@ categories: JS
 date: 2022-11-13
 updated: 2022-11-13
 tags: JS
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fupload-images.jianshu.io%2Fupload_images%2F7275569-78f8b42bb54aec85.jpg&refer=http%3A%2F%2Fupload-images.jianshu.io&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1671266536&t=e242d8866a11e11ce85f7bd2674b4d7b
 ---
 
 ## apply、call、bind 的区别
