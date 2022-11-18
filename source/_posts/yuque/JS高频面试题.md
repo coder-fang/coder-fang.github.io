@@ -544,3 +544,30 @@ Promise.race([requestImg(), timeout()])
 **Promise.all() 中传入的是数组，返回的也是数组，并会进行映射，传入的 Promise 对象返回值是按照顺序在数组中排列的，但是注意他们执行的顺序并不是按照顺序的，除非可迭代对象为空。**
 
 > **注意：Promise.all 获得的成功结果的数组中的数据顺序和 Promise.all()接收的数组顺序是一致的，这样当遇到多个请求并根据请求顺序获取和使用数据的场景，可以使用 Promise.all 来解决。**
+
+## 使用 requestAnimationFrame 实现一个定时器
+
+```javascript
+function setInterval(callback, interval) {
+  let timer;
+  const now = Date.now;
+  let startTime = now();
+  let endTime = startTime;
+  const loop = () => {
+    timer = window.requestAnimationFrame(loop);
+    endTime = now();
+    if (endTime - startTime >= interval) {
+      startTime = endTime = now();
+      callback(timer);
+    }
+  };
+  timer = window.requestAnimationFrame(loop);
+  return timer;
+}
+let a = 0;
+setInterval((timer) => {
+  console.log(1);
+  a++;
+  if (a === 3) cancelAnimationFrame(timer);
+}, 1000);
+```
