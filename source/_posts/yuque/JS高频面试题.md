@@ -545,7 +545,7 @@ Promise.race([requestImg(), timeout()])
 
 > **注意：Promise.all 获得的成功结果的数组中的数据顺序和 Promise.all()接收的数组顺序是一致的，这样当遇到多个请求并根据请求顺序获取和使用数据的场景，可以使用 Promise.all 来解决。**
 
-## 使用 requestAnimationFrame 实现一个定时器
+## 使用 requestAnimationFrame 实现一个循环定时器
 
 ```javascript
 function setInterval(callback, interval) {
@@ -571,3 +571,6 @@ setInterval((timer) => {
   if (a === 3) cancelAnimationFrame(timer);
 }, 1000);
 ```
+
+⾸先 requestAnimationFrame ⾃带函数节流功能，基本可以保证在 16.6 毫秒内只执⾏⼀次（不掉
+帧的情况下），并且该函数的延时效果是精确的，没有其他定时器时间不准的问题。
