@@ -497,3 +497,50 @@ Array.from(arrayLike);
 - 影响原数组特定项的索引的方法，indexOf()和 lastIndexOf()
 - 迭代方法：every()、some()、filter()、map()、forEach()方法
 - 数组归并方法：reduce()、reduceRight()方法
+
+## Promise.race() 应用场景
+
+> race() 和 all() 一样，接受的参数是一个每项都是 Promise 的数组，但是与 all 不同的是，当**最先执行完**的事件执行完后，就直接返回该 promise 对象的值。
+> 如果第一个 promise 对象状态变成 resolved，则自身的状态就变成了 resolved；反之，第一个 promise 变成 rejected，则自身状态就会变成 rejected。
+
+**Promise.race() 应用场景**：
+
+- http 请求时，做超时判断时，设置一个定时器，当定时器时间到了时间就在页面提醒请求超时。
+
+```javascript
+// 请求某个图片资源
+function requestImg() {
+  var p = new Promise(function (resolve, reject) {
+    var img = new Image();
+    img.onload = function () {
+      resolve(img);
+    };
+    img.src = "http://www.baidu.com/img/flexiable/logo/pc/result.png";
+  });
+  return p;
+}
+// 延时函数，用于给请求计时
+function timeout() {
+  var p = new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      reject("图片请求操时");
+    }, 5000);
+  });
+  return p;
+}
+Promise.race([requestImg(), timeout()])
+  .then(function (results) {
+    console.log(results);
+  })
+  .catch(function (reason) {
+    console.log(reason);
+  });
+```
+
+## Promise.all() 应用场景
+
+> 它可以将多个 promise 实例包装成一个新的 Promise 实例。同时，成功和失败的返回值是不同的，成功时返回一个**结构数组**，而失败时则返回**最先被 reject 失败状态的值。**
+
+**Promise.all() 中传入的是数组，返回的也是数组，并会进行映射，传入的 Promise 对象返回值是按照顺序在数组中排列的，但是注意他们执行的顺序并不是按照顺序的，除非可迭代对象为空。**
+
+> **注意：Promise.all 获得的成功结果的数组中的数据顺序和 Promise.all()接收的数组顺序是一致的，这样当遇到多个请求并根据请求顺序获取和使用数据的场景，可以使用 Promise.all 来解决。**
