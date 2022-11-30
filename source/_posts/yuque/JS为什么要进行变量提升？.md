@@ -1,3 +1,12 @@
+---
+title: JS为什么要进行变量提升？
+categories: JS
+date: 2022-11-15
+updated: 2022-11-15
+tags: JS
+cover: https://img2.baidu.com/it/u=101925709,3442706391&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500
+---
+
 ## 1.变量提升如何体现？
 
 变量提升通常发生在 var 声明的变量里，使用 var 声明一个变量时，该变量会被提升到作用域的顶端，但是赋值的部分并不会被提升。

@@ -1,3 +1,12 @@
+---
+title: keep-alive实现原理
+categories: 框架
+date: 2022-11-16
+updated: 2022-11-16
+tags: Vue
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic2.zhimg.com%2Fv2-86df8247745c62d526051662353c7739_r.jpg%3Fsource%3D1940ef5c&refer=http%3A%2F%2Fpic2.zhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1672407297&t=f7f5279caca9a3d4ceefbbd6876431b5
+---
+
 - 该组件内没有常规的`<template></template>`等标签，因为它不是一个常规的模板组件，取而代之的是，它内部多了一个 render 函数，它是一个函数式组件。执行`<keep-alive>`组件渲染时，就会执行这个`render`函数。
 - keep-alive 缓存机制是根据 LRU 策略来设置缓存组件新鲜度，将很久未访问的组件从缓存中删除。
 
