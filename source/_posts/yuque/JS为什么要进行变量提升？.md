@@ -1,7 +1,7 @@
 ---
 title: JS为什么要进行变量提升？
 categories: JS
-date: 2022-11-15
+date: 2022-11-14
 updated: 2022-11-15
 tags: JS
 cover: https://img2.baidu.com/it/u=101925709,3442706391&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=500
