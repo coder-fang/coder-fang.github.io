@@ -71,7 +71,7 @@ type: link
       <div class="links-content">
          <div class="link-navigation">
             <div class="card">
-               <img class="ava" src="https://cdn.jsdelivr.net/gh/hvnobug/assets/common/avatar.png" />
+               <img class="ava" src="https://varlet.gitee.io/varlet-ui/logo.svg" />
                <div class="card-header">
                   <div>
                      <a href="https://varlet.gitee.io/varlet-ui/#/en-US/index">Varlet</a>
