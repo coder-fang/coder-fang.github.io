@@ -4,7 +4,7 @@ categories: Vue
 date: 2022-11-18
 updated: 2022-11-18
 tags: Vue
-cover: https://i0.hdslb.com/bfs/article/217c6ac1a63385536c165865cc35e0eeed5b712b.jpg@942w_531h_progressive.webp
+cover: https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208162638.png
 ---
 
 # 数据响应式原理
@@ -138,7 +138,7 @@ v-model 本质是：
 </script>
 ```
 
-![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208125406.png)
+![](https://raw.githubusercontent.com/coder-fang/myBlogImgRespository/master/img/20221208125406.png)
 好处：数据驱动视图，之后操作关心数据本身即可，无需因为数据改变去手动操作视图了。
 
 ### Proxy 实现数据双向绑定
@@ -174,4 +174,4 @@ v-model 本质是：
 </script>
 ```
 
-![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208125431.png)
+![](https://raw.githubusercontent.com/coder-fang/myBlogImgRespository/master/img/20221208125431.png)

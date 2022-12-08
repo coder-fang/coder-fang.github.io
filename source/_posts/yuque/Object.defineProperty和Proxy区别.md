@@ -1,3 +1,12 @@
+---
+title: Object.defineProperty和Proxy区别
+categories: Vue
+date: 2022-11-18
+updated: 2022-11-18
+tags: Vue
+cover: https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/vd.png
+---
+
 ## 代理和反射
 
 vue2 中的 Object.defineProperty()和 vue3 中的 Proxy()本质上的作用都是代理。
