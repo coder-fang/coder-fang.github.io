@@ -1,5 +1,5 @@
 ---
-title: Vue 响应式原理和双向绑定原理
+title: Vue 响应式原理和双向绑定原理区分
 categories: Vue
 date: 2022-11-18
 updated: 2022-11-18
