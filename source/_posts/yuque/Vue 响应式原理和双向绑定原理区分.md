@@ -107,7 +107,7 @@ v-model 本质是：
 ```
 
 效果：在输入内框内输入内容，下方数据会相应改变。
-![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208124835.png#crop=0&crop=0&crop=1&crop=1&id=MJFQT&originHeight=156&originWidth=344&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
+![](https://raw.githubusercontent.com/coder-fang/myBlogImgRespository/master/img/20221208124835.png)
 
 ### 使用 Proxy 实现响应式
 
@@ -138,7 +138,7 @@ v-model 本质是：
 </script>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2022/gif/2324645/1670468676245-4af8fd73-9b35-430a-8bf5-629955fe586c.gif#averageHue=%2321201e&clientId=u4a4a03ee-3632-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=ufade95fd&margin=%5Bobject%20Object%5D&originHeight=500&originWidth=1200&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=ud1559d52-6ec8-4ee5-9516-8fe9b6a7f45&title=)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208125406.png)
 好处：数据驱动视图，之后操作关心数据本身即可，无需因为数据改变去手动操作视图了。
 
 ### Proxy 实现数据双向绑定
@@ -174,4 +174,4 @@ v-model 本质是：
 </script>
 ```
 
-![](https://cdn.nlark.com/yuque/0/2022/gif/2324645/1670469533425-3f9121e3-7b43-45d0-b8ff-a957292b60e1.gif#averageHue=%23605f5e&clientId=u4a4a03ee-3632-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=u59f6e3af&margin=%5Bobject%20Object%5D&originHeight=500&originWidth=1200&originalType=url&ratio=1&rotation=0&showTitle=false&status=done&style=none&taskId=uc4b67a66-d983-43a1-bc3e-6aad1fcbf0b&title=)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208125431.png)
