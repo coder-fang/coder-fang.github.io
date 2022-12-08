@@ -107,7 +107,7 @@ v-model 本质是：
 ```
 
 效果：在输入内框内输入内容，下方数据会相应改变。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670467984507-e1e85aab-d368-4c5b-be2a-00ddd256d306.png#averageHue=%23fcfcfb&clientId=u4a4a03ee-3632-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=156&id=u0a25fce2&margin=%5Bobject%20Object%5D&name=image.png&originHeight=156&originWidth=344&originalType=binary&ratio=1&rotation=0&showTitle=false&size=2878&status=done&style=none&taskId=u9827df4b-799a-4e20-92c2-90c9da4f40a&title=&width=344)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208124835.png#crop=0&crop=0&crop=1&crop=1&id=MJFQT&originHeight=156&originWidth=344&originalType=binary&ratio=1&rotation=0&showTitle=false&status=done&style=none&title=)
 
 ### 使用 Proxy 实现响应式
 
