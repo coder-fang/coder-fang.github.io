@@ -15,7 +15,7 @@ input 为什么能输入内容？
 
 1. 以 Chrome 为例，F12 打开 Chrome 浏览器控制台，点击设置，开启 Element 下的 Show user agent shadow DOM 选项，可以看见一些隐藏的结构：
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670411600005-e67a8576-4926-4c9f-a693-0dae1476a22c.png#averageHue=%23fdfcfc&clientId=ub72215d0-37c7-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=251&id=uc383f482&margin=%5Bobject%20Object%5D&name=image.png&originHeight=251&originWidth=1773&originalType=binary&ratio=1&rotation=0&showTitle=false&size=30458&status=done&style=none&taskId=u15f3b7d1-1863-4e10-9d77-0a364b87f3a&title=&width=1773)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208130211.png)
 
 > 可以看到 input 标签下有一个 shadow-dom，点开 shadow-dom 可以看到里面的内容。这其中的内容就是具体的实现。
 
@@ -68,7 +68,7 @@ Shadow DOM 是”DOM 中的 DOM“，是独立的 DOM，具有自己的元素和
 ```
 
 显示结果：
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670461761397-6539319a-0082-40d0-baf6-0a4fcebd213c.png#averageHue=%23fcfcfc&clientId=uad761d21-c926-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=436&id=u5a2119b7&margin=%5Bobject%20Object%5D&name=image.png&originHeight=436&originWidth=1527&originalType=binary&ratio=1&rotation=0&showTitle=false&size=40541&status=done&style=none&taskId=u92268cff-b2b9-4206-bdc1-45ae22630b2&title=&width=1527)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208130237.png)
 `<slot>`标签创建了一个**插入点**将`.pokemon`里面的文本投影出来，多个内容匹配时可以使用`name`属性指定。
 
 ```javascript
@@ -94,7 +94,7 @@ Shadow DOM 是”DOM 中的 DOM“，是独立的 DOM，具有自己的元素和
 ```
 
 显示结果：
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670463834689-262852ec-d76f-47a7-9903-577fd8aff11d.png#averageHue=%23fefefd&clientId=uad761d21-c926-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=570&id=u435a022b&margin=%5Bobject%20Object%5D&name=image.png&originHeight=570&originWidth=1630&originalType=binary&ratio=1&rotation=0&showTitle=false&size=41095&status=done&style=none&taskId=u0a1b5c5f-6eb8-496b-a7f6-c2bd4485332&title=&width=1630)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208130255.png)
 
 > 注意：
 >
@@ -130,5 +130,5 @@ Shadow DOM 是”DOM 中的 DOM“，是独立的 DOM，具有自己的元素和
 ```
 
 显示结果：
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670464937931-193bdb09-7043-4572-b2d6-365c57e08a36.png#averageHue=%23fefdfd&clientId=uad761d21-c926-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=545&id=u8c66ed9a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=545&originWidth=1809&originalType=binary&ratio=1&rotation=0&showTitle=false&size=50929&status=done&style=none&taskId=u700c6088-7f12-480e-966e-b7832f65bc5&title=&width=1809)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208130315.png)
 在影子节点中存在边界使 shadow dom 样式和正常 DOM 流中的样式互不干扰，这是一种作用域化的体现，不用担心样式的相互冲突。
