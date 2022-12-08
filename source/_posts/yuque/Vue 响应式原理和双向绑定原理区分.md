@@ -13,7 +13,7 @@ cover: https://i0.hdslb.com/bfs/article/217c6ac1a63385536c165865cc35e0eeed5b712b
 Vue 内部通过 Object.defineProperty() 监听对象属性的改变，它有对应的两个描述属性 get 和 set，当数据发生改变后，通过此方法对两个属性进行重写操作，从而通过发布-订阅者模式通知界面发生改变。
 Vue2 是借助 Object.defineProperty() 实现的，而 Vue3 是借助 Proxy 实现的，通过 Proxy 对象创建一个对象的代理，并且 Proxy 的监听是深层次的，监听整个对象，而不是某个属性。
 **发布-订阅者模式：**
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670466093627-917735a6-b2bf-41b8-b898-8b7bb5fcd830.png#averageHue=%23faf6f6&clientId=u4a4a03ee-3632-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=uc3ada30e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=453&originWidth=785&originalType=url&ratio=1&rotation=0&showTitle=false&size=79656&status=done&style=none&taskId=u010afc35-b9d7-4a7f-a7ad-1eebfab64cb&title=)
+![]([https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208120909.png)](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208120909.png))
 
 1. new Vue() 首先执行初始化，对 data 执行响应化处理，此过程发生在 Observer 中
 2. compiler 对模板执行编译，找到其中动态绑定的数据，从 data 中获取并初始化视图
