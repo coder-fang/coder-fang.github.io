@@ -76,7 +76,7 @@ type: link
                   <div>
                      <a href="https://varlet.gitee.io/varlet-ui/#/en-US/index">Varlet</a>
                   </div>
-                  <div class="info">一个Material风格Vue3移动端组件库</div>
+                  <div class="info">一款Material风格Vue3移动端组件库</div>
                </div>
             </div>
             <div class="card">
@@ -85,7 +85,7 @@ type: link
                   <div>
                      <a href="https://vike123.gitee.io/varlet-ute/#/en-US/index">Varlet UTE</a>
                   </div>
-                  <div class="info">一个基于 VARLET 开发的主题编辑工具</div>
+                  <div class="info">一款基于 VARLET 开发的主题编辑工具</div>
                </div>
             </div>
          </div>
