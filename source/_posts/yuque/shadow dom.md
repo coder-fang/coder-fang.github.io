@@ -47,7 +47,7 @@ Shadow DOM 是”DOM 中的 DOM“，是独立的 DOM，具有自己的元素和
 ```
 
 运行结果：
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670422798069-f562239f-89c6-4f2a-8d0f-aae3f8b6649e.png#averageHue=%23f7f5f2&clientId=uad761d21-c926-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=45&id=u2d957b6e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=45&originWidth=165&originalType=binary&ratio=1&rotation=0&showTitle=false&size=1504&status=done&style=none&taskId=ub2c481b1-f2d9-4795-b052-03be1629b4f&title=&width=165)
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/649e.png)
 那么如何渲染宿主节点中的内容？
 可以使用`slot`标签。由于目前`content`标签已经弃用，可以使用`slot`标签代替。
 
