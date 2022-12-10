@@ -59,13 +59,18 @@ type: link
          color: #d480aa;
          text-decoration: none;
          }
+         .card .card-header .name {
+            text-align: center;
+         }
          .card .card-header .info {
-         font-style:normal;
-         color:#a3a3a3;
-         font-size:14px;
-         min-width: 0;
-         overflow: hidden;
-         white-space: nowrap;
+            font-style:normal;
+            color:#a3a3a3;
+            font-size:14px;
+            min-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-align: center;
          }
       </style>
       <div class="links-content">
@@ -73,7 +78,7 @@ type: link
             <div class="card">
                <img class="ava" src="https://varlet.gitee.io/varlet-ui/logo.svg" />
                <div class="card-header">
-                  <div>
+                  <div class="name">
                      <a href="https://varlet.gitee.io/varlet-ui/#/en-US/index">Varlet</a>
                   </div>
                   <div class="info">一款Material风格的Vue3移动端组件库</div>
@@ -82,7 +87,7 @@ type: link
             <div class="card">
                <img class="ava" src="https://varlet.gitee.io/varlet-ui/logo.svg" />
                <div class="card-header">
-                  <div>
+                  <div class="name">
                      <a href="https://vike123.gitee.io/varlet-ute/#/en-US/index">Varlet UTE</a>
                   </div>
                   <div class="info">一款基于 VARLET 开发的主题编辑工具</div>
@@ -91,7 +96,7 @@ type: link
             <div class="card">
                <img class="ava" src="https://source.catrol.cn/icons/headIcon.jpg" />
                <div class="card-header">
-                  <div>
+                  <div class="name">
                      <a href="https://blog.catrol.cn/">常青园晚</a>
                   </div>
                   <div class="info">高中小菜鸡，喜欢编程，打游戏以及学习（不是）。</div>
@@ -99,5 +104,6 @@ type: link
             </div>
          </div>
       </div>
+
    </div>
 </div>
