@@ -11,7 +11,8 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
     #web_bg[data-type=color],
     #footer[data-type=color]
       background: darken(#121212, 2)
-
+    // #body-wrap[data-type=color]
+    //   background: darken(#121212, 2)
     #web_bg[data-type=photo]:before,
     #footer[data-type=photo]:before
       position: absolute
@@ -19,7 +20,7 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
       height: 100%
       background-color: alpha($dark-black, .7)
       content: ''
-
+    // #body-wrap[data-type=photo]:before,
     #page-header,
     .layout_post > #post,
     .layout_page > div:first-child:not(.recent-posts)

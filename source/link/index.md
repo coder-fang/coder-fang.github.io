@@ -65,7 +65,7 @@ type: link
          .card .card-header .info {
             font-style:normal;
             color:#a3a3a3;
-            font-size:14px;
+            font-size: 17px;
             min-width: 0;
             overflow: hidden;
             white-space: nowrap;
