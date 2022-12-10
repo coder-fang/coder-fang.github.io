@@ -212,3 +212,8 @@ markdown:
     permalink: false
     permalinkClass: header-anchor
     permalinkSymbol: ¶
+# 站点地图
+sitemap:
+  path: sitemap.xml
+  tag: false
+  category: false
