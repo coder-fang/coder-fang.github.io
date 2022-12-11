@@ -102,6 +102,15 @@ type: link
                   <div class="info">高中小菜鸡，喜欢编程，打游戏以及学习（不是）。</div>
                </div>
             </div>
+            <div class="card">
+               <img class="ava" src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" />
+               <div class="card-header">
+                  <div class="name">
+                     <a href="https://tzy1997.com/">Ethan.Tzy</a>
+                  </div>
+                  <div class="info">古今之成大事者，不惟有超世之才，亦必有坚忍不拔之志</div>
+               </div>
+            </div>
          </div>
       </div>
 
