@@ -4,7 +4,7 @@ categories: Vue
 date: 2022-11-18
 updated: 2022-11-18
 tags: Vue
-cover: https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/vd.png
+cover: https://n.sinaimg.cn/sinacn20191110ac/25/w1000h625/20191110/82c7-iieqapt1512506.jpg
 ---
 
 ## 代理和反射
