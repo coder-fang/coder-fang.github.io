@@ -1,8 +1,8 @@
 [
   {
-    "id": 109145514,
-    "slug": "shkqwao85pxqdcgl",
-    "title": "JS 垃圾回收机制",
+    "id": 109200730,
+    "slug": "kvm3p7okwkae7lsc",
+    "title": "为什么script 标签是一个宏任务",
     "book_id": 35046022,
     "book": {
       "id": 35046022,
@@ -13,11 +13,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -32,7 +32,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -50,7 +50,86 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
+      "_serializer": "v2.user"
+    },
+    "format": "lake",
+    "body": "--- <br />title: 为什么script 标签是一个宏任务<br />categories: JS<br />date: 2022-11-05<br />updated: 2022-11-05<br />tags: [JS,eventloop]<br />cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207212120_NJLCP.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673494031&t=952d53bd392fa152eb1c9f1a7c658539<br />--- \n> JS是一门单线程的语言，因此，JS在同一时间只能做一件事，单线程意味着，如果在同个时间有多个任务，这些任务就要排队，前一个任务执行完，才会执行下一个任务。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png#averageHue=%23f1eff2&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=477&id=u76ea3fa3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=477&originWidth=763&originalType=binary&ratio=1&rotation=0&showTitle=false&size=138004&status=done&style=none&taskId=u6d065fa0-7f0c-4299-9eb1-d104661b4bd&title=&width=763)<br />举个栗子：\n```javascript\n<!-- 脚本 1 -->\n<script>\n\t// 同步\n\tconsole.log('startA')\n\t// 异步宏\n\tsetTimeout(() => console.log('A1'), 0)\n\tnew Promise((resolve, reject) => {\n\t\t// 同步\n\t\tconsole.log('A2')\n\t\tresolve()\n\t}).then(() => {\n\t\t// 异步微\n\t\tconsole.log('A3')\n\t})\n\t// 同步\n\tconsole.log('A4')\n</script>\n\n<!-- 脚本 2 -->\n<script>\n\t// 同步\n\tconsole.log('startB')\n\t// 异步宏\n\tsetTimeout(() => console.log('B2'), 0)\n\tnew Promise((resolve, reject) => {\n\t\t// 同步\n\t\tconsole.log('B2')\n\t\tresolve()\n\t}).then(() => {\n\t\t// 异步微\n\t\tconsole.log('B3')\n\t})\n\t// 同步\n\tconsole.log('end2')\n</script>\n```\n结果：\n```javascript\nscript A\nA2\nA4\nA3\nscript B\nB2\nB4\nB3\nA1\nB1\n```\n步骤：\n\n1. 最开始，JS引擎将这段代码解析成两个宏任务，一个是 脚本1，一个是 脚本2。会把这两个宏任务放到宏任务队列中去。正常情况下，JS执行是先微后宏，此时微任务队列中没有队列任务，就跳过，去执行宏任务。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670898463403-2dd88652-6c90-4975-9cd1-43bdb2f8db13.png#averageHue=%23f2e8e0&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=270&id=uc96b1a6c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=270&originWidth=326&originalType=binary&ratio=1&rotation=0&showTitle=false&size=30416&status=done&style=none&taskId=u2bdc46ca-275d-42be-bb3a-9dcdb08290e&title=&width=326)\n\n2. 因为 脚本1 在上面，JS会去先执行 脚本1 ，然后就把script A 压入 【调用栈】中。\n   1. 由于第一行代码是同步代码，所以先执行。\n   2. 将 timer1 压入 宏任务队列中\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899077228-3c5733f6-f95e-4e2a-9970-a4be90412ec1.png#averageHue=%23f4f0ea&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=254&id=ua0c458ca&margin=%5Bobject%20Object%5D&name=image.png&originHeight=254&originWidth=405&originalType=binary&ratio=1&rotation=0&showTitle=false&size=27642&status=done&style=none&taskId=u852c97c0-9b65-4888-ad85-cf40f8a199c&title=&width=405)\n\n   3. new Promise() 中p1是 同步任务，立即执行，出栈\n   4. 触发异步机制，进入 Promise.then() 中，触发回调，把A3加入微任务队列中去，等待执行\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899089251-145264c4-b8bd-4736-874f-227312175e60.png#averageHue=%23f4e8e1&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=251&id=R6c2R&margin=%5Bobject%20Object%5D&name=image.png&originHeight=251&originWidth=384&originalType=binary&ratio=1&rotation=0&showTitle=false&size=26983&status=done&style=none&taskId=ub8561ed2-194e-44e9-ad21-535a0c2c240&title=&width=384)\n\n   5. 此时，按照“先微后宏“的顺序， 此时，微任务队列中有任务，就把A3放入调用栈中执行，输出A3，出栈（A4是同步代码，已经在A3之前执行输出）\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899704352-7528d448-b4dc-420d-bdb3-1fb3407e8caa.png#averageHue=%23f4eae4&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=250&id=ud2893cfc&margin=%5Bobject%20Object%5D&name=image.png&originHeight=250&originWidth=372&originalType=binary&ratio=1&rotation=0&showTitle=false&size=29144&status=done&style=none&taskId=u9118bbad-f295-4397-a9aa-b1613dbc913&title=&width=372)<br />此时，微任务队列中没有任务了，事件循环会跳过微任务，去执行宏任务。会把script B调入调用栈中去（不是全部一下子调入调用栈中的，是按照代码先后顺序去逐行调入的）。<br />![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900133149-a369a583-4d6c-469c-9aa3-e37405606f13.png#averageHue=%23f4f1eb&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=256&id=u3fd88008&margin=%5Bobject%20Object%5D&name=image.png&originHeight=256&originWidth=369&originalType=binary&ratio=1&rotation=0&showTitle=false&size=27544&status=done&style=none&taskId=u3b91c160-41f3-40d9-8c39-c6a287ecbdb&title=&width=369)\n\n3. 将B1这个宏任务加入到宏任务队列中去\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900387253-a76291b9-45b6-4c70-a4d0-5834ec85fe36.png#averageHue=%23f3eae4&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=269&id=ua16f381a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=269&originWidth=386&originalType=binary&ratio=1&rotation=0&showTitle=false&size=28521&status=done&style=none&taskId=u4fa9cd4e-a7b0-4776-9536-70d33baf4a2&title=&width=386)\n\n4. B2是同步代码，加入调用栈中，执行，输出， 出栈；输出B4，scriptB宏任务就结束了，调用栈清空。\n5. 触发异步回调Promise.then()，将B3加入到微任务队列中去。\n6. 此时，如图6，按照先微后宏的顺序，会依次把B3、A1、B1输出。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900756939-879e78a1-0df5-4020-8635-691925a5e40a.png#averageHue=%23f5f4f0&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=251&id=u3872b20d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=251&originWidth=366&originalType=binary&ratio=1&rotation=0&showTitle=false&size=25361&status=done&style=none&taskId=u072a3081-7700-4e2e-9b97-1ad6333f86a&title=&width=366)\n<a name=\"E8CTa\"></a>\n### 总结\n<script>标签是一个宏任务，因为这是一个代码段的入口，且必须要加载。\n<a name=\"d7a7m\"></a>\n#### 为什么JS的微任务优先于宏任务？\n```javascript\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Document</title>\n</head>\n<body>\n    <script>\n        setTimeout(() => {\n           console.log(1) \n        }, 0);\n\n        new Promise((rej)=>rej(2)).then((data)=>\n            console.log(data)\n        )\n    </script>\n</body>\n</html>\n```\n实际上JS会先执行一个宏任务，再执行微任务，但是为什么微任务会先执行呢？<br />其实真正造成微任务优先级大于宏任务，是因为script本身就是一个宏任务，所以会先执行script这个宏任务，这个宏任务执行完又添加了一个宏任务（计时器），一个微任务（promise），但是执行完一个宏任务，该执行当前所有的微任务，所以先输出2，执行完微任务，再去循环调用，再执行一个宏任务，也就是定时器，执行完，发现微任务为空，就暂停，等待任务的到来，这就是事件循环的原理eventloop。<br />所以，在做一些面试题的过程中，我们只需要记住微任务优先级大于宏任务就可以得出真正的答案。\n",
+    "body_draft": "--- <br />title: 为什么script 标签是一个宏任务<br />categories: JS<br />date: 2022-11-05<br />updated: 2022-11-05<br />tags: [JS,eventloop]<br />cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207212120_NJLCP.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673494031&t=952d53bd392fa152eb1c9f1a7c658539<br />--- \n> JS是一门单线程的语言，因此，JS在同一时间只能做一件事，单线程意味着，如果在同个时间有多个任务，这些任务就要排队，前一个任务执行完，才会执行下一个任务。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png#averageHue=%23f1eff2&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=477&id=u76ea3fa3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=477&originWidth=763&originalType=binary&ratio=1&rotation=0&showTitle=false&size=138004&status=done&style=none&taskId=u6d065fa0-7f0c-4299-9eb1-d104661b4bd&title=&width=763)<br />举个栗子：\n```javascript\n<!-- 脚本 1 -->\n<script>\n\t// 同步\n\tconsole.log('startA')\n\t// 异步宏\n\tsetTimeout(() => console.log('A1'), 0)\n\tnew Promise((resolve, reject) => {\n\t\t// 同步\n\t\tconsole.log('A2')\n\t\tresolve()\n\t}).then(() => {\n\t\t// 异步微\n\t\tconsole.log('A3')\n\t})\n\t// 同步\n\tconsole.log('A4')\n</script>\n\n<!-- 脚本 2 -->\n<script>\n\t// 同步\n\tconsole.log('startB')\n\t// 异步宏\n\tsetTimeout(() => console.log('B2'), 0)\n\tnew Promise((resolve, reject) => {\n\t\t// 同步\n\t\tconsole.log('B2')\n\t\tresolve()\n\t}).then(() => {\n\t\t// 异步微\n\t\tconsole.log('B3')\n\t})\n\t// 同步\n\tconsole.log('end2')\n</script>\n```\n结果：\n```javascript\nscript A\nA2\nA4\nA3\nscript B\nB2\nB4\nB3\nA1\nB1\n```\n步骤：\n\n1. 最开始，JS引擎将这段代码解析成两个宏任务，一个是 脚本1，一个是 脚本2。会把这两个宏任务放到宏任务队列中去。正常情况下，JS执行是先微后宏，此时微任务队列中没有队列任务，就跳过，去执行宏任务。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670898463403-2dd88652-6c90-4975-9cd1-43bdb2f8db13.png#averageHue=%23f2e8e0&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=270&id=uc96b1a6c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=270&originWidth=326&originalType=binary&ratio=1&rotation=0&showTitle=false&size=30416&status=done&style=none&taskId=u2bdc46ca-275d-42be-bb3a-9dcdb08290e&title=&width=326)\n\n2. 因为 脚本1 在上面，JS会去先执行 脚本1 ，然后就把script A 压入 【调用栈】中。\n   1. 由于第一行代码是同步代码，所以先执行。\n   2. 将 timer1 压入 宏任务队列中\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899077228-3c5733f6-f95e-4e2a-9970-a4be90412ec1.png#averageHue=%23f4f0ea&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=254&id=ua0c458ca&margin=%5Bobject%20Object%5D&name=image.png&originHeight=254&originWidth=405&originalType=binary&ratio=1&rotation=0&showTitle=false&size=27642&status=done&style=none&taskId=u852c97c0-9b65-4888-ad85-cf40f8a199c&title=&width=405)\n\n   3. new Promise() 中p1是 同步任务，立即执行，出栈\n   4. 触发异步机制，进入 Promise.then() 中，触发回调，把A3加入微任务队列中去，等待执行\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899089251-145264c4-b8bd-4736-874f-227312175e60.png#averageHue=%23f4e8e1&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=251&id=R6c2R&margin=%5Bobject%20Object%5D&name=image.png&originHeight=251&originWidth=384&originalType=binary&ratio=1&rotation=0&showTitle=false&size=26983&status=done&style=none&taskId=ub8561ed2-194e-44e9-ad21-535a0c2c240&title=&width=384)\n\n   5. 此时，按照“先微后宏“的顺序， 此时，微任务队列中有任务，就把A3放入调用栈中执行，输出A3，出栈（A4是同步代码，已经在A3之前执行输出）\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899704352-7528d448-b4dc-420d-bdb3-1fb3407e8caa.png#averageHue=%23f4eae4&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=250&id=ud2893cfc&margin=%5Bobject%20Object%5D&name=image.png&originHeight=250&originWidth=372&originalType=binary&ratio=1&rotation=0&showTitle=false&size=29144&status=done&style=none&taskId=u9118bbad-f295-4397-a9aa-b1613dbc913&title=&width=372)<br />此时，微任务队列中没有任务了，事件循环会跳过微任务，去执行宏任务。会把script B调入调用栈中去（不是全部一下子调入调用栈中的，是按照代码先后顺序去逐行调入的）。<br />![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900133149-a369a583-4d6c-469c-9aa3-e37405606f13.png#averageHue=%23f4f1eb&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=256&id=u3fd88008&margin=%5Bobject%20Object%5D&name=image.png&originHeight=256&originWidth=369&originalType=binary&ratio=1&rotation=0&showTitle=false&size=27544&status=done&style=none&taskId=u3b91c160-41f3-40d9-8c39-c6a287ecbdb&title=&width=369)\n\n3. 将B1这个宏任务加入到宏任务队列中去\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900387253-a76291b9-45b6-4c70-a4d0-5834ec85fe36.png#averageHue=%23f3eae4&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=269&id=ua16f381a&margin=%5Bobject%20Object%5D&name=image.png&originHeight=269&originWidth=386&originalType=binary&ratio=1&rotation=0&showTitle=false&size=28521&status=done&style=none&taskId=u4fa9cd4e-a7b0-4776-9536-70d33baf4a2&title=&width=386)\n\n4. B2是同步代码，加入调用栈中，执行，输出， 出栈；输出B4，scriptB宏任务就结束了，调用栈清空。\n5. 触发异步回调Promise.then()，将B3加入到微任务队列中去。\n6. 此时，如图6，按照先微后宏的顺序，会依次把B3、A1、B1输出。\n\n![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900756939-879e78a1-0df5-4020-8635-691925a5e40a.png#averageHue=%23f5f4f0&clientId=u9fcda738-8167-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=251&id=u3872b20d&margin=%5Bobject%20Object%5D&name=image.png&originHeight=251&originWidth=366&originalType=binary&ratio=1&rotation=0&showTitle=false&size=25361&status=done&style=none&taskId=u072a3081-7700-4e2e-9b97-1ad6333f86a&title=&width=366)\n<a name=\"E8CTa\"></a>\n### 总结\n<script>标签是一个宏任务，因为这是一个代码段的入口，且必须要加载。\n<a name=\"d7a7m\"></a>\n#### 为什么JS的微任务优先于宏任务？\n```javascript\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Document</title>\n</head>\n<body>\n    <script>\n        setTimeout(() => {\n           console.log(1) \n        }, 0);\n\n        new Promise((rej)=>rej(2)).then((data)=>\n            console.log(data)\n        )\n    </script>\n</body>\n</html>\n```\n实际上JS会先执行一个宏任务，再执行微任务，但是为什么微任务会先执行呢？<br />其实真正造成微任务优先级大于宏任务，是因为script本身就是一个宏任务，所以会先执行script这个宏任务，这个宏任务执行完又添加了一个宏任务（计时器），一个微任务（promise），但是执行完一个宏任务，该执行当前所有的微任务，所以先输出2，执行完微任务，再去循环调用，再执行一个宏任务，也就是定时器，执行完，发现微任务为空，就暂停，等待任务的到来，这就是事件循环的原理eventloop。<br />所以，在做一些面试题的过程中，我们只需要记住微任务优先级大于宏任务就可以得出真正的答案。\n",
+    "body_html": "<!doctype html><div class=\"lake-content\" typography=\"classic\"><p id=\"u265c89db\" class=\"ne-p\"><span class=\"ne-text\">--- </span></p><p id=\"uaabe2cf3\" class=\"ne-p\"><span class=\"ne-text\">title: 为什么script 标签是一个宏任务</span></p><p id=\"u6da62028\" class=\"ne-p\"><span class=\"ne-text\">categories: JS</span></p><p id=\"u0c591b02\" class=\"ne-p\"><span class=\"ne-text\">date: 2022-11-05</span></p><p id=\"uaa3b820d\" class=\"ne-p\"><span class=\"ne-text\">updated: 2022-11-05</span></p><p id=\"u05972217\" class=\"ne-p\"><span class=\"ne-text\">tags: [JS,eventloop]</span></p><p id=\"u15405a15\" class=\"ne-p\"><span class=\"ne-text\">cover: </span><span class=\"ne-text\">https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207212120_NJLCP.jpeg&amp;refer=http%3A%2F%2Fc-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1673494031&amp;t=952d53bd392fa152eb1c9f1a7c658539</span></p><p id=\"ua7b72cc6\" class=\"ne-p\"><span class=\"ne-text\">--- </span></p><div class=\"ne-quote\"><p id=\"udc8dc4a2\" class=\"ne-p\"><span class=\"ne-text\">JS是一门单线程的语言，因此，JS在同一时间只能做一件事，单线程意味着，如果在同个时间有多个任务，这些任务就要排队，前一个任务执行完，才会执行下一个任务。</span></p></div><p id=\"ub43020b8\" class=\"ne-p\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png\" width=\"763\" id=\"u76ea3fa3\" class=\"ne-image\"></p><p id=\"u7bcafe0a\" class=\"ne-p\"><span class=\"ne-text\">举个栗子：</span></p><pre data-language=\"javascript\" id=\"Wtvo2\" class=\"ne-codeblock language-javascript\">&lt;!-- 脚本 1 --&gt;\n&lt;script&gt;\n\t// 同步\n\tconsole.log('startA')\n\t// 异步宏\n\tsetTimeout(() =&gt; console.log('A1'), 0)\n\tnew Promise((resolve, reject) =&gt; {\n\t\t// 同步\n\t\tconsole.log('A2')\n\t\tresolve()\n\t}).then(() =&gt; {\n\t\t// 异步微\n\t\tconsole.log('A3')\n\t})\n\t// 同步\n\tconsole.log('A4')\n&lt;/script&gt;\n\n&lt;!-- 脚本 2 --&gt;\n&lt;script&gt;\n\t// 同步\n\tconsole.log('startB')\n\t// 异步宏\n\tsetTimeout(() =&gt; console.log('B2'), 0)\n\tnew Promise((resolve, reject) =&gt; {\n\t\t// 同步\n\t\tconsole.log('B2')\n\t\tresolve()\n\t}).then(() =&gt; {\n\t\t// 异步微\n\t\tconsole.log('B3')\n\t})\n\t// 同步\n\tconsole.log('end2')\n&lt;/script&gt;</pre><p id=\"uae643499\" class=\"ne-p\"><span class=\"ne-text\">结果：</span></p><pre data-language=\"javascript\" id=\"OOtL5\" class=\"ne-codeblock language-javascript\">script A\nA2\nA4\nA3\nscript B\nB2\nB4\nB3\nA1\nB1</pre><p id=\"u820f79d6\" class=\"ne-p\"><span class=\"ne-text\">步骤：</span></p><ol class=\"ne-ol\"><li id=\"ue58a3580\"><span class=\"ne-text\">最开始，JS引擎将这段代码解析成两个宏任务，一个是 脚本1，一个是 脚本2。会把这两个宏任务放到宏任务队列中去。正常情况下，JS执行是先微后宏，此时微任务队列中没有队列任务，就跳过，去执行宏任务。</span></li></ol><p id=\"ucdda22cb\" class=\"ne-p\" style=\"text-indent: 2em; margin-left: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670898463403-2dd88652-6c90-4975-9cd1-43bdb2f8db13.png\" width=\"326\" id=\"uc96b1a6c\" class=\"ne-image\"></p><ol start=\"2\" class=\"ne-ol\"><li id=\"u1d8e2c69\"><span class=\"ne-text\">因为 脚本1 在上面，JS会去先执行 脚本1 ，然后就把script A 压入 【调用栈】中。</span></li></ol><ol class=\"ne-list-wrap\"><ol ne-level=\"1\" class=\"ne-ol\"><li id=\"u2c52c29f\"><span class=\"ne-text\">由于第一行代码是同步代码，所以先执行。</span></li><li id=\"uf3110e48\"><span class=\"ne-text\">将 timer1 压入 宏任务队列中</span></li></ol></ol><p id=\"u0e0b22fb\" class=\"ne-p\" style=\"text-indent: 2em; margin-left: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899077228-3c5733f6-f95e-4e2a-9970-a4be90412ec1.png\" width=\"405\" id=\"ua0c458ca\" class=\"ne-image\"></p><ol class=\"ne-list-wrap\"><ol start=\"3\" ne-level=\"1\" class=\"ne-ol\"><li id=\"ua52345fc\"><span class=\"ne-text\">new Promise() 中p1是 同步任务，立即执行，出栈</span></li><li id=\"uae7398fb\"><span class=\"ne-text\">触发异步机制，进入 Promise.then() 中，触发回调，把A3加入微任务队列中去，等待执行</span></li></ol></ol><p id=\"u053fe744\" class=\"ne-p\" style=\"text-indent: 2em; margin-left: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899089251-145264c4-b8bd-4736-874f-227312175e60.png\" width=\"384\" id=\"R6c2R\" class=\"ne-image\"></p><ol class=\"ne-list-wrap\"><ol start=\"5\" ne-level=\"1\" class=\"ne-ol\"><li id=\"u5103d5c3\"><span class=\"ne-text\">此时，按照“先微后宏“的顺序， 此时，微任务队列中有任务，就把A3放入调用栈中执行，输出A3，出栈（A4是同步代码，已经在A3之前执行输出）</span></li></ol></ol><p id=\"u3ffe4688\" class=\"ne-p\" style=\"text-indent: 2em; margin-left: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670899704352-7528d448-b4dc-420d-bdb3-1fb3407e8caa.png\" width=\"372\" id=\"ud2893cfc\" class=\"ne-image\"></p><p id=\"ua823e556\" class=\"ne-p\" style=\"text-indent: 2em\"><span class=\"ne-text\">此时，微任务队列中没有任务了，事件循环会跳过微任务，去执行宏任务。会把script B调入调用栈中去（不是全部一下子调入调用栈中的，是按照代码先后顺序去逐行调入的）。</span></p><p id=\"u4ac284ba\" class=\"ne-p\" style=\"text-indent: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900133149-a369a583-4d6c-469c-9aa3-e37405606f13.png\" width=\"369\" id=\"u3fd88008\" class=\"ne-image\"></p><ol start=\"3\" class=\"ne-ol\"><li id=\"u2a5b8743\"><span class=\"ne-text\">将B1这个宏任务加入到宏任务队列中去</span></li></ol><p id=\"u56ca305c\" class=\"ne-p\" style=\"text-indent: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900387253-a76291b9-45b6-4c70-a4d0-5834ec85fe36.png\" width=\"386\" id=\"ua16f381a\" class=\"ne-image\"></p><ol start=\"4\" class=\"ne-ol\"><li id=\"u96237d7b\"><span class=\"ne-text\">B2是同步代码，加入调用栈中，执行，输出， 出栈；输出B4，scriptB宏任务就结束了，调用栈清空。</span></li><li id=\"uc0249e91\"><span class=\"ne-text\">触发异步回调Promise.then()，将B3加入到微任务队列中去。</span></li><li id=\"u2122a714\"><span class=\"ne-text\">此时，如图6，按照先微后宏的顺序，会依次把B3、A1、B1输出。</span></li></ol><p id=\"u8ec52554\" class=\"ne-p\" style=\"text-indent: 2em\"><img src=\"https://cdn.nlark.com/yuque/0/2022/png/2324645/1670900756939-879e78a1-0df5-4020-8635-691925a5e40a.png\" width=\"366\" id=\"u3872b20d\" class=\"ne-image\"></p><h3 id=\"E8CTa\"><span class=\"ne-text\">总结</span></h3><p id=\"ubb375812\" class=\"ne-p\"><span class=\"ne-text\">&lt;script&gt;标签是一个宏任务，因为这是一个代码段的入口，且必须要加载。</span></p><h4 id=\"d7a7m\"><span class=\"ne-text\">为什么JS的微任务优先于宏任务？</span></h4><pre data-language=\"javascript\" id=\"tS8Mf\" class=\"ne-codeblock language-javascript\">&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;en&quot;&gt;\n&lt;head&gt;\n    &lt;meta charset=&quot;UTF-8&quot;&gt;\n    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;\n    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;\n    &lt;title&gt;Document&lt;/title&gt;\n&lt;/head&gt;\n&lt;body&gt;\n    &lt;script&gt;\n        setTimeout(() =&gt; {\n           console.log(1) \n        }, 0);\n\n        new Promise((rej)=&gt;rej(2)).then((data)=&gt;\n            console.log(data)\n        )\n    &lt;/script&gt;\n&lt;/body&gt;\n&lt;/html&gt;</pre><p id=\"u3ec60c38\" class=\"ne-p\" style=\"text-indent: 2em\"><span class=\"ne-text\">实际上JS会先执行一个宏任务，再执行微任务，但是为什么微任务会先执行呢？</span></p><p id=\"uec188ac4\" class=\"ne-p\" style=\"text-indent: 2em\"><span class=\"ne-text\">其实真正造成微任务优先级大于宏任务，是因为script本身就是一个宏任务，所以会先执行script这个宏任务，这个宏任务执行完又添加了一个宏任务（计时器），一个微任务（promise），但是执行完一个宏任务，该执行当前所有的微任务，所以先输出2，执行完微任务，再去循环调用，再执行一个宏任务，也就是定时器，执行完，发现微任务为空，就暂停，等待任务的到来，这就是事件循环的原理eventloop。</span></p><p id=\"u355bc0ac\" class=\"ne-p\" style=\"text-indent: 2em\"><span class=\"ne-text\">所以，在做一些面试题的过程中，我们只需要记住微任务优先级大于宏任务就可以得出真正的答案。</span></p></div>",
+    "body_lake": "<!doctype lake><meta name=\"doc-version\" content=\"1\" /><meta name=\"typography\" content=\"classic\" /><meta name=\"viewport\" content=\"fixed\" /><meta name=\"paragraphSpacing\" content=\"relax\" /><p data-lake-id=\"u265c89db\" id=\"u265c89db\"><span data-lake-id=\"ubf0dab9f\" id=\"ubf0dab9f\">--- </span></p><p data-lake-id=\"uaabe2cf3\" id=\"uaabe2cf3\"><span data-lake-id=\"u60340cfc\" id=\"u60340cfc\">title: 为什么script 标签是一个宏任务</span></p><p data-lake-id=\"u6da62028\" id=\"u6da62028\"><span data-lake-id=\"ua6aa27bd\" id=\"ua6aa27bd\">categories: JS</span></p><p data-lake-id=\"u0c591b02\" id=\"u0c591b02\"><span data-lake-id=\"uc4bd43d4\" id=\"uc4bd43d4\">date: 2022-11-05</span></p><p data-lake-id=\"uaa3b820d\" id=\"uaa3b820d\"><span data-lake-id=\"u5038de4a\" id=\"u5038de4a\">updated: 2022-11-05</span></p><p data-lake-id=\"u05972217\" id=\"u05972217\"><span data-lake-id=\"u2aa627f1\" id=\"u2aa627f1\">tags: [JS,eventloop]</span></p><p data-lake-id=\"u15405a15\" id=\"u15405a15\"><span data-lake-id=\"ud7e35e02\" id=\"ud7e35e02\">cover: </span><span data-lake-id=\"u716f0487\" id=\"u716f0487\">https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207212120_NJLCP.jpeg&amp;refer=http%3A%2F%2Fc-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1673494031&amp;t=952d53bd392fa152eb1c9f1a7c658539</span></p><p data-lake-id=\"ua7b72cc6\" id=\"ua7b72cc6\"><span data-lake-id=\"u5ab4e882\" id=\"u5ab4e882\">--- </span></p><blockquote data-lake-id=\"u182d8e39\" id=\"u182d8e39\"><p data-lake-id=\"udc8dc4a2\" id=\"udc8dc4a2\"><span data-lake-id=\"u5cfc1ad8\" id=\"u5cfc1ad8\">JS是一门单线程的语言，因此，JS在同一时间只能做一件事，单线程意味着，如果在同个时间有多个任务，这些任务就要排队，前一个任务执行完，才会执行下一个任务。</span></p></blockquote><p data-lake-id=\"ub43020b8\" id=\"ub43020b8\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png%22%2C%22taskId%22%3A%22u6d065fa0-7f0c-4299-9eb1-d104661b4bd%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A763%2C%22height%22%3A477%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A138004%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A763%2C%22originHeight%22%3A477%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22SCRIPT(%E6%95%B4%E4%BD%93%E4%BB%A3%E7%A0%81)%20SETTIMEOUT%20SETLNTERVAL%20SETLMMEDIATE(NODE.JS)%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%20I%2FO(NODE.JS)%20UL%20RENDERING%20%E5%BC%82%E6%AD%A5API%E7%B1%BB%E5%9E%8B%20POSTMESSAGE%20MESSAGECHANNEL%20PROMISE.THEN%20HTML5%E6%96%B0%E7%89%B9%E6%80%A7%20MUTATIONOBSERVE%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%20PROCESS.NEXTTICK(NODE.JS)%20OBJECT.OBSERVE%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A473.7202%2C%22y%22%3A18.069471%2C%22width%22%3A111.36934000000008%2C%22height%22%3A17.701247000000002%2C%22text%22%3A%22SCRIPT(%E6%95%B4%E4%BD%93%E4%BB%A3%E7%A0%81)%22%7D%2C%7B%22x%22%3A471.9464%2C%22y%22%3A55.791973%2C%22width%22%3A84.92210000000006%2C%22height%22%3A14.345337%2C%22text%22%3A%22SETTIMEOUT%22%7D%2C%7B%22x%22%3A472.46362%2C%22y%22%3A91.81787%2C%22width%22%3A78.22602000000006%2C%22height%22%3A14.669336000000001%2C%22text%22%3A%22SETLNTERVAL%22%7D%2C%7B%22x%22%3A472.2977%2C%22y%22%3A126.42755%2C%22width%22%3A166.45279999999997%2C%22height%22%3A18.985960000000006%2C%22text%22%3A%22SETLMMEDIATE(NODE.JS)%22%7D%2C%7B%22x%22%3A308.34534%2C%22y%22%3A143.07684%2C%22width%22%3A111.85872999999998%2C%22height%22%3A18.88977%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%22%7D%2C%7B%22x%22%3A471.9143%2C%22y%22%3A163.27759%2C%22width%22%3A101.85676000000001%2C%22height%22%3A17.02546000000001%2C%22text%22%3A%22I%2FO(NODE.JS)%22%7D%2C%7B%22x%22%3A472.57095%2C%22y%22%3A199.1479%2C%22width%22%3A91.99255%2C%22height%22%3A17.729659999999996%2C%22text%22%3A%22UL%20RENDERING%22%7D%2C%7B%22x%22%3A30.529745%2C%22y%22%3A220.11334%2C%22width%22%3A159.465875%2C%22height%22%3A34.99768%2C%22text%22%3A%22%E5%BC%82%E6%AD%A5API%E7%B1%BB%E5%9E%8B%22%7D%2C%7B%22x%22%3A473.33005%2C%22y%22%3A238.94995%2C%22width%22%3A96.80624999999998%2C%22height%22%3A13.579710000000006%2C%22text%22%3A%22POSTMESSAGE%22%7D%2C%7B%22x%22%3A474.08224%2C%22y%22%3A272.91888%2C%22width%22%3A123.99675999999994%2C%22height%22%3A15.156960000000026%2C%22text%22%3A%22MESSAGECHANNEL%22%7D%2C%7B%22x%22%3A472.82962%2C%22y%22%3A328.59946%2C%22width%22%3A97.10654%2C%22height%22%3A15.41713999999996%2C%22text%22%3A%22PROMISE.THEN%22%7D%2C%7B%22x%22%3A649.84564%2C%22y%22%3A363.91296%2C%22width%22%3A100.38671999999997%2C%22height%22%3A19.113620000000026%2C%22text%22%3A%22HTML5%E6%96%B0%E7%89%B9%E6%80%A7%22%7D%2C%7B%22x%22%3A472.76123%2C%22y%22%3A365.60483%2C%22width%22%3A127.90286999999995%2C%22height%22%3A15.724170000000015%2C%22text%22%3A%22MUTATIONOBSERVE%22%7D%2C%7B%22x%22%3A307.2041%2C%22y%22%3A382.76523%2C%22width%22%3A113.34586000000002%2C%22height%22%3A18.684230000000014%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%22%7D%2C%7B%22x%22%3A471.781%2C%22y%22%3A401.52585%2C%22width%22%3A187.20260000000002%2C%22height%22%3A19.23828000000003%2C%22text%22%3A%22PROCESS.NEXTTICK(NODE.JS)%22%7D%2C%7B%22x%22%3A473.74316%2C%22y%22%3A436.70816%2C%22width%22%3A111.61354000000006%2C%22height%22%3A17.07430999999997%2C%22text%22%3A%22OBJECT.OBSERVE%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f1eff2%22%2C%22id%22%3A%22u76ea3fa3%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><p data-lake-id=\"u7bcafe0a\" id=\"u7bcafe0a\"><span data-lake-id=\"ua9e2ec87\" id=\"ua9e2ec87\">举个栗子：</span></p><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22%3C!--%20%E8%84%9A%E6%9C%AC%201%20--%3E%5Cn%3Cscript%3E%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('startA')%5Cn%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%AE%8F%5Cn%5CtsetTimeout(()%20%3D%3E%20console.log('A1')%2C%200)%5Cn%5Ctnew%20Promise((resolve%2C%20reject)%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ct%5Ctconsole.log('A2')%5Cn%5Ct%5Ctresolve()%5Cn%5Ct%7D).then(()%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%BE%AE%5Cn%5Ct%5Ctconsole.log('A3')%5Cn%5Ct%7D)%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('A4')%5Cn%3C%2Fscript%3E%5Cn%5Cn%3C!--%20%E8%84%9A%E6%9C%AC%202%20--%3E%5Cn%3Cscript%3E%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('startB')%5Cn%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%AE%8F%5Cn%5CtsetTimeout(()%20%3D%3E%20console.log('B2')%2C%200)%5Cn%5Ctnew%20Promise((resolve%2C%20reject)%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ct%5Ctconsole.log('B2')%5Cn%5Ct%5Ctresolve()%5Cn%5Ct%7D).then(()%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%BE%AE%5Cn%5Ct%5Ctconsole.log('B3')%5Cn%5Ct%7D)%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('end2')%5Cn%3C%2Fscript%3E%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22Wtvo2%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"uae643499\" id=\"uae643499\"><span data-lake-id=\"ud8625e75\" id=\"ud8625e75\">结果：</span></p><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22script%20A%5CnA2%5CnA4%5CnA3%5Cnscript%20B%5CnB2%5CnB4%5CnB3%5CnA1%5CnB1%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22OOtL5%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"u820f79d6\" id=\"u820f79d6\"><span data-lake-id=\"u7690294f\" id=\"u7690294f\">步骤：</span></p><ol list=\"ue494ead2\"><li fid=\"u4a72fb6c\" data-lake-id=\"ue58a3580\" id=\"ue58a3580\"><span data-lake-id=\"uf8e2ca5b\" id=\"uf8e2ca5b\">最开始，JS引擎将这段代码解析成两个宏任务，一个是 脚本1，一个是 脚本2。会把这两个宏任务放到宏任务队列中去。正常情况下，JS执行是先微后宏，此时微任务队列中没有队列任务，就跳过，去执行宏任务。</span></li></ol><p data-lake-id=\"ucdda22cb\" id=\"ucdda22cb\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670898463403-2dd88652-6c90-4975-9cd1-43bdb2f8db13.png%22%2C%22taskId%22%3A%22u2bdc46ca-275d-42be-bb3a-9dcdb08290e%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A326%2C%22height%22%3A270%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A30416%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A326%2C%22originHeight%22%3A270%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20SCRIPT%20B%20SCRIPT%20A%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A167.58073%2C%22y%22%3A31.147781%2C%22width%22%3A29.24122%2C%22height%22%3A11.031129000000004%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A228.64091%2C%22y%22%3A31.215631%2C%22width%22%3A28.844959999999986%2C%22height%22%3A11.528407000000005%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A43.578724%2C%22y%22%3A31.87203%2C%22width%22%3A26.387896000000005%2C%22height%22%3A9.461302%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A232.4837%2C%22y%22%3A60.712788%2C%22width%22%3A37.48680000000002%2C%22height%22%3A12.678501999999995%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A233.211%2C%22y%22%3A105.9999%2C%22width%22%3A37.65773999999999%2C%22height%22%3A9.222940000000008%2C%22text%22%3A%22SCRIPT%20A%22%7D%2C%7B%22x%22%3A63.392365%2C%22y%22%3A140.03297%2C%22width%22%3A60.99133500000001%2C%22height%22%3A13.495949999999993%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A111.28178%2C%22y%22%3A199.56544%2C%22width%22%3A36.980729999999994%2C%22height%22%3A11.016819999999996%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2e8e0%22%2C%22id%22%3A%22uc96b1a6c%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u38f5f923\" start=\"2\"><li fid=\"uac72b9e0\" data-lake-id=\"u1d8e2c69\" id=\"u1d8e2c69\"><span data-lake-id=\"u1b3ba3f4\" id=\"u1b3ba3f4\">因为 脚本1 在上面，JS会去先执行 脚本1 ，然后就把script A 压入 【调用栈】中。</span></li></ol><ol list=\"u38f5f923\" data-lake-indent=\"1\"><li fid=\"uac72b9e0\" data-lake-id=\"u2c52c29f\" id=\"u2c52c29f\"><span data-lake-id=\"u5266c3ed\" id=\"u5266c3ed\">由于第一行代码是同步代码，所以先执行。</span></li><li fid=\"uac72b9e0\" data-lake-id=\"uf3110e48\" id=\"uf3110e48\"><span data-lake-id=\"ubf83e297\" id=\"ubf83e297\">将 timer1 压入 宏任务队列中</span></li></ol><p data-lake-id=\"u0e0b22fb\" id=\"u0e0b22fb\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899077228-3c5733f6-f95e-4e2a-9970-a4be90412ec1.png%22%2C%22taskId%22%3A%22u852c97c0-9b65-4888-ad85-cf40f8a199c%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A405%2C%22height%22%3A254%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A27642%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A405%2C%22originHeight%22%3A254%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20SCRIPT%20A%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%202%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A55.22875%2C%22y%22%3A13.841815%2C%22width%22%3A27.11262%2C%22height%22%3A10.999493999999999%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A169.22272%2C%22y%22%3A19.968452%2C%22width%22%3A30.682739999999995%2C%22height%22%3A12.101962999999998%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A232.20831%2C%22y%22%3A20.045303%2C%22width%22%3A31.26766999999998%2C%22height%22%3A11.410706000000001%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A62.4491%2C%22y%22%3A69.79634%2C%22width%22%3A39.978229999999996%2C%22height%22%3A10.284980000000004%2C%22text%22%3A%22SCRIPT%20A%22%7D%2C%7B%22x%22%3A229.73766%2C%22y%22%3A86.67399%2C%22width%22%3A39.77884%2C%22height%22%3A10.537409999999994%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A82.27115%2C%22y%22%3A160.04175%2C%22width%22%3A61.60246000000001%2C%22height%22%3A12.852779999999996%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A143.14139%2C%22y%22%3A207.97295%2C%22width%22%3A35.89725999999999%2C%22height%22%3A11.274000000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A323.3334%2C%22y%22%3A218.80884%2C%22width%22%3A15.049470000000042%2C%22height%22%3A19.04907%2C%22text%22%3A%222%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4f0ea%22%2C%22id%22%3A%22ua0c458ca%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u93e8ba59\" start=\"3\" data-lake-indent=\"1\"><li fid=\"u357bbe98\" data-lake-id=\"ua52345fc\" id=\"ua52345fc\"><span data-lake-id=\"u865ef5cd\" id=\"u865ef5cd\">new Promise() 中p1是 同步任务，立即执行，出栈</span></li><li fid=\"u357bbe98\" data-lake-id=\"uae7398fb\" id=\"uae7398fb\"><span data-lake-id=\"u438a8de3\" id=\"u438a8de3\">触发异步机制，进入 Promise.then() 中，触发回调，把A3加入微任务队列中去，等待执行</span></li></ol><p data-lake-id=\"u053fe744\" id=\"u053fe744\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899089251-145264c4-b8bd-4736-874f-227312175e60.png%22%2C%22taskId%22%3A%22ub8561ed2-194e-44e9-ad21-535a0c2c240%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A384%2C%22height%22%3A251%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A26983%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A384%2C%22originHeight%22%3A251%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20A3%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A199.43187%2C%22y%22%3A20.69535%2C%22width%22%3A25.69668999999999%2C%22height%22%3A10.932868%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A273.24594%2C%22y%22%3A20.692667%2C%22width%22%3A26.533999999999992%2C%22height%22%3A10.101140999999998%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A88.368835%2C%22y%22%3A27.368555%2C%22width%22%3A27.961204999999993%2C%22height%22%3A10.468845000000002%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A217.35045%2C%22y%22%3A96.86615%2C%22width%22%3A16.248559999999998%2C%22height%22%3A11.156289999999998%2C%22text%22%3A%22A3%22%7D%2C%7B%22x%22%3A273.11154%2C%22y%22%3A101.77619%2C%22width%22%3A41.43096000000003%2C%22height%22%3A12.222864000000001%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A123.216866%2C%22y%22%3A160.79552%2C%22width%22%3A59.656794000000005%2C%22height%22%3A13.570809999999994%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A179.78389%2C%22y%22%3A198.68031%2C%22width%22%3A36.15348999999998%2C%22height%22%3A10.751800000000003%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4e8e1%22%2C%22id%22%3A%22R6c2R%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u93e8ba59\" start=\"5\" data-lake-indent=\"1\"><li fid=\"u357bbe98\" data-lake-id=\"u5103d5c3\" id=\"u5103d5c3\"><span data-lake-id=\"u2b244630\" id=\"u2b244630\">此时，按照“先微后宏“的顺序， 此时，微任务队列中有任务，就把A3放入调用栈中执行，输出A3，出栈（A4是同步代码，已经在A3之前执行输出）</span></li></ol><p data-lake-id=\"u3ffe4688\" id=\"u3ffe4688\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899704352-7528d448-b4dc-420d-bdb3-1fb3407e8caa.png%22%2C%22taskId%22%3A%22u9118bbad-f295-4397-a9aa-b1613dbc913%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A372%2C%22height%22%3A250%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A29144%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A372%2C%22originHeight%22%3A250%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20A1%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A171.71759%2C%22y%22%3A17.299837%2C%22width%22%3A31.007689999999997%2C%22height%22%3A11.558133000000002%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A251.90474%2C%22y%22%3A17.33274%2C%22width%22%3A30.79054000000002%2C%22height%22%3A12.413619999999998%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A69.55042%2C%22y%22%3A29.729523%2C%22width%22%3A28.01567%2C%22height%22%3A10.786437%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A266.07376%2C%22y%22%3A67.84777%2C%22width%22%3A16.307439999999986%2C%22height%22%3A11.491280000000003%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A253.10986%2C%22y%22%3A105.9978%2C%22width%22%3A41.848179999999985%2C%22height%22%3A12.005130000000008%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A99.038414%2C%22y%22%3A147.5628%2C%22width%22%3A61.936976%2C%22height%22%3A12.997140000000002%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A151.14961%2C%22y%22%3A200.6723%2C%22width%22%3A35.616090000000014%2C%22height%22%3A11.299610000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4eae4%22%2C%22id%22%3A%22ud2893cfc%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><p data-lake-id=\"ua823e556\" id=\"ua823e556\" style=\"text-indent: 2em\"><span data-lake-id=\"uacc2b669\" id=\"uacc2b669\">此时，微任务队列中没有任务了，事件循环会跳过微任务，去执行宏任务。会把script B调入调用栈中去（不是全部一下子调入调用栈中的，是按照代码先后顺序去逐行调入的）。</span></p><p data-lake-id=\"u4ac284ba\" id=\"u4ac284ba\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900133149-a369a583-4d6c-469c-9aa3-e37405606f13.png%22%2C%22taskId%22%3A%22u3b91c160-41f3-40d9-8c39-c6a287ecbdb%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A369%2C%22height%22%3A256%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A27544%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A369%2C%22originHeight%22%3A256%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%205%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A46.804646%2C%22y%22%3A13.769633%2C%22width%22%3A26.412830000000007%2C%22height%22%3A10.889165%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A182.16158%2C%22y%22%3A29.829214%2C%22width%22%3A33.299920000000014%2C%22height%22%3A12.341912999999998%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A267.19785%2C%22y%22%3A30.485334%2C%22width%22%3A33.44049000000001%2C%22height%22%3A11.939661000000001%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A46.389343%2C%22y%22%3A70.00644%2C%22width%22%3A39.46529700000001%2C%22height%22%3A10.656554%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A76.867714%2C%22y%22%3A132.58641%2C%22width%22%3A61.942345999999986%2C%22height%22%3A13.2363%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A127.842926%2C%22y%22%3A196.6527%2C%22width%22%3A36.109053999999986%2C%22height%22%3A10.633499999999998%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A340.58105%2C%22y%22%3A219.46819%2C%22width%22%3A14.566649999999981%2C%22height%22%3A19.51289%2C%22text%22%3A%225%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4f1eb%22%2C%22id%22%3A%22u3fd88008%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"uc7ef8267\" start=\"3\"><li fid=\"u9cf9a514\" data-lake-id=\"u2a5b8743\" id=\"u2a5b8743\"><span data-lake-id=\"ue9b8b7b2\" id=\"ue9b8b7b2\">将B1这个宏任务加入到宏任务队列中去</span></li></ol><p data-lake-id=\"u56ca305c\" id=\"u56ca305c\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900387253-a76291b9-45b6-4c70-a4d0-5834ec85fe36.png%22%2C%22taskId%22%3A%22u4fa9cd4e-a7b0-4776-9536-70d33baf4a2%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A386%2C%22height%22%3A269%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A28521%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A386%2C%22originHeight%22%3A269%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20B1%20B3%20A1%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%209%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A59.742905%2C%22y%22%3A31.658447%2C%22width%22%3A28.018409%2C%22height%22%3A11.288135999999998%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A193.53918%2C%22y%22%3A34.33099%2C%22width%22%3A35.241090000000014%2C%22height%22%3A12.769913000000003%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A268.3002%2C%22y%22%3A35.13676%2C%22width%22%3A32.951599999999985%2C%22height%22%3A11.642007%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A277.83286%2C%22y%22%3A109.69742%2C%22width%22%3A20.29097999999999%2C%22height%22%3A13.493284000000003%2C%22text%22%3A%22B1%22%7D%2C%7B%22x%22%3A209.01122%2C%22y%22%3A139.96742%2C%22width%22%3A19.341260000000005%2C%22height%22%3A13.773210000000006%2C%22text%22%3A%22B3%22%7D%2C%7B%22x%22%3A279.39517%2C%22y%22%3A148.78505%2C%22width%22%3A18.467649999999992%2C%22height%22%3A12.506619999999998%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A87.33082%2C%22y%22%3A159.97743%2C%22width%22%3A61.61746999999998%2C%22height%22%3A13.068330000000003%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A142.80788%2C%22y%22%3A223.24193%2C%22width%22%3A35.42348999999999%2C%22height%22%3A10.716260000000005%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A350.27515%2C%22y%22%3A228.74152%2C%22width%22%3A12.176510000000007%2C%22height%22%3A18.404740000000004%2C%22text%22%3A%229%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f3eae4%22%2C%22id%22%3A%22ua16f381a%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"uae54abcc\" start=\"4\"><li fid=\"u1f24f1dd\" data-lake-id=\"u96237d7b\" id=\"u96237d7b\"><span data-lake-id=\"ubfda63e6\" id=\"ubfda63e6\">B2是同步代码，加入调用栈中，执行，输出， 出栈；输出B4，scriptB宏任务就结束了，调用栈清空。</span></li><li fid=\"u1f24f1dd\" data-lake-id=\"uc0249e91\" id=\"uc0249e91\"><span data-lake-id=\"uf15e2edf\" id=\"uf15e2edf\">触发异步回调Promise.then()，将B3加入到微任务队列中去。</span></li><li fid=\"u1f24f1dd\" data-lake-id=\"u2122a714\" id=\"u2122a714\"><span data-lake-id=\"u95d73241\" id=\"u95d73241\">此时，如图6，按照先微后宏的顺序，会依次把B3、A1、B1输出。</span></li></ol><p data-lake-id=\"u8ec52554\" id=\"u8ec52554\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900756939-879e78a1-0df5-4020-8635-691925a5e40a.png%22%2C%22taskId%22%3A%22u072a3081-7700-4e2e-9b97-1ad6333f86a%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A366%2C%22height%22%3A251%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A25361%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A366%2C%22originHeight%22%3A251%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E6%B6%A6%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20B3%20A1%20B1%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A260.6627%2C%22y%22%3A14.635081%2C%22width%22%3A33.27660000000003%2C%22height%22%3A12.422294%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A52.539337%2C%22y%22%3A16.41581%2C%22width%22%3A27.875327999999996%2C%22height%22%3A10.046610000000001%2C%22text%22%3A%22%E6%B6%A6%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A204.57423%2C%22y%22%3A16.65014%2C%22width%22%3A32.659400000000005%2C%22height%22%3A12.075109999999999%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A65.88245%2C%22y%22%3A85.263794%2C%22width%22%3A14.344073999999992%2C%22height%22%3A9.263936000000001%2C%22text%22%3A%22B3%22%7D%2C%7B%22x%22%3A66.06218%2C%22y%22%3A103.33198%2C%22width%22%3A14.361810000000006%2C%22height%22%3A9.90764%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A65.22076%2C%22y%22%3A122.781685%2C%22width%22%3A14.717280000000002%2C%22height%22%3A10.441074999999998%2C%22text%22%3A%22B1%22%7D%2C%7B%22x%22%3A102.84731%2C%22y%22%3A140.57848%2C%22width%22%3A33.25686000000002%2C%22height%22%3A11.42962%2C%22text%22%3A%22EVENT%22%7D%2C%7B%22x%22%3A106.36553%2C%22y%22%3A155.89883%2C%22width%22%3A27.92662999999999%2C%22height%22%3A11.717880000000008%2C%22text%22%3A%22LOOP%22%7D%2C%7B%22x%22%3A145.52036%2C%22y%22%3A199.69753%2C%22width%22%3A35.52101999999999%2C%22height%22%3A10.914670000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f5f4f0%22%2C%22id%22%3A%22u3872b20d%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><h3 data-lake-id=\"E8CTa\" id=\"E8CTa\"><span data-lake-id=\"u34a521f2\" id=\"u34a521f2\">总结</span></h3><p data-lake-id=\"ubb375812\" id=\"ubb375812\"><span data-lake-id=\"uba060527\" id=\"uba060527\">&lt;script&gt;标签是一个宏任务，因为这是一个代码段的入口，且必须要加载。</span></p><h4 data-lake-id=\"d7a7m\" id=\"d7a7m\"><span data-lake-id=\"u7fd1fbd6\" id=\"u7fd1fbd6\">为什么JS的微任务优先于宏任务？</span></h4><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22%3C!DOCTYPE%20html%3E%5Cn%3Chtml%20lang%3D%5C%22en%5C%22%3E%5Cn%3Chead%3E%5Cn%20%20%20%20%3Cmeta%20charset%3D%5C%22UTF-8%5C%22%3E%5Cn%20%20%20%20%3Cmeta%20http-equiv%3D%5C%22X-UA-Compatible%5C%22%20content%3D%5C%22IE%3Dedge%5C%22%3E%5Cn%20%20%20%20%3Cmeta%20name%3D%5C%22viewport%5C%22%20content%3D%5C%22width%3Ddevice-width%2C%20initial-scale%3D1.0%5C%22%3E%5Cn%20%20%20%20%3Ctitle%3EDocument%3C%2Ftitle%3E%5Cn%3C%2Fhead%3E%5Cn%3Cbody%3E%5Cn%20%20%20%20%3Cscript%3E%5Cn%20%20%20%20%20%20%20%20setTimeout(()%20%3D%3E%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%20console.log(1)%20%5Cn%20%20%20%20%20%20%20%20%7D%2C%200)%3B%5Cn%5Cn%20%20%20%20%20%20%20%20new%20Promise((rej)%3D%3Erej(2)).then((data)%3D%3E%5Cn%20%20%20%20%20%20%20%20%20%20%20%20console.log(data)%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%3C%2Fscript%3E%5Cn%3C%2Fbody%3E%5Cn%3C%2Fhtml%3E%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22tS8Mf%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"u3ec60c38\" id=\"u3ec60c38\" style=\"text-indent: 2em\"><span data-lake-id=\"uca13b636\" id=\"uca13b636\">实际上JS会先执行一个宏任务，再执行微任务，但是为什么微任务会先执行呢？</span></p><p data-lake-id=\"uec188ac4\" id=\"uec188ac4\" style=\"text-indent: 2em\"><span data-lake-id=\"u8c5d3f51\" id=\"u8c5d3f51\">其实真正造成微任务优先级大于宏任务，是因为script本身就是一个宏任务，所以会先执行script这个宏任务，这个宏任务执行完又添加了一个宏任务（计时器），一个微任务（promise），但是执行完一个宏任务，该执行当前所有的微任务，所以先输出2，执行完微任务，再去循环调用，再执行一个宏任务，也就是定时器，执行完，发现微任务为空，就暂停，等待任务的到来，这就是事件循环的原理eventloop。</span></p><p data-lake-id=\"u355bc0ac\" id=\"u355bc0ac\" style=\"text-indent: 2em\"><span data-lake-id=\"ud09ca3fc\" id=\"ud09ca3fc\">所以，在做一些面试题的过程中，我们只需要记住微任务优先级大于宏任务就可以得出真正的答案。</span></p>",
+    "body_draft_lake": "<!doctype lake><meta name=\"doc-version\" content=\"1\" /><meta name=\"typography\" content=\"classic\" /><meta name=\"viewport\" content=\"fixed\" /><meta name=\"paragraphSpacing\" content=\"relax\" /><p data-lake-id=\"u265c89db\" id=\"u265c89db\"><span data-lake-id=\"ubf0dab9f\" id=\"ubf0dab9f\">--- </span></p><p data-lake-id=\"uaabe2cf3\" id=\"uaabe2cf3\"><span data-lake-id=\"u60340cfc\" id=\"u60340cfc\">title: 为什么script 标签是一个宏任务</span></p><p data-lake-id=\"u6da62028\" id=\"u6da62028\"><span data-lake-id=\"ua6aa27bd\" id=\"ua6aa27bd\">categories: JS</span></p><p data-lake-id=\"u0c591b02\" id=\"u0c591b02\"><span data-lake-id=\"uc4bd43d4\" id=\"uc4bd43d4\">date: 2022-11-05</span></p><p data-lake-id=\"uaa3b820d\" id=\"uaa3b820d\"><span data-lake-id=\"u5038de4a\" id=\"u5038de4a\">updated: 2022-11-05</span></p><p data-lake-id=\"u05972217\" id=\"u05972217\"><span data-lake-id=\"u2aa627f1\" id=\"u2aa627f1\">tags: [JS,eventloop]</span></p><p data-lake-id=\"u15405a15\" id=\"u15405a15\"><span data-lake-id=\"ud7e35e02\" id=\"ud7e35e02\">cover: </span><span data-lake-id=\"u716f0487\" id=\"u716f0487\">https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207212120_NJLCP.jpeg&amp;refer=http%3A%2F%2Fc-ssl.duitang.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1673494031&amp;t=952d53bd392fa152eb1c9f1a7c658539</span></p><p data-lake-id=\"ua7b72cc6\" id=\"ua7b72cc6\"><span data-lake-id=\"u5ab4e882\" id=\"u5ab4e882\">--- </span></p><blockquote data-lake-id=\"u182d8e39\" id=\"u182d8e39\"><p data-lake-id=\"udc8dc4a2\" id=\"udc8dc4a2\"><span data-lake-id=\"u5cfc1ad8\" id=\"u5cfc1ad8\">JS是一门单线程的语言，因此，JS在同一时间只能做一件事，单线程意味着，如果在同个时间有多个任务，这些任务就要排队，前一个任务执行完，才会执行下一个任务。</span></p></blockquote><p data-lake-id=\"ub43020b8\" id=\"ub43020b8\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png%22%2C%22taskId%22%3A%22u6d065fa0-7f0c-4299-9eb1-d104661b4bd%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A763%2C%22height%22%3A477%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A138004%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A763%2C%22originHeight%22%3A477%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22SCRIPT(%E6%95%B4%E4%BD%93%E4%BB%A3%E7%A0%81)%20SETTIMEOUT%20SETLNTERVAL%20SETLMMEDIATE(NODE.JS)%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%20I%2FO(NODE.JS)%20UL%20RENDERING%20%E5%BC%82%E6%AD%A5API%E7%B1%BB%E5%9E%8B%20POSTMESSAGE%20MESSAGECHANNEL%20PROMISE.THEN%20HTML5%E6%96%B0%E7%89%B9%E6%80%A7%20MUTATIONOBSERVE%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%20PROCESS.NEXTTICK(NODE.JS)%20OBJECT.OBSERVE%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A473.7202%2C%22y%22%3A18.069471%2C%22width%22%3A111.36934000000008%2C%22height%22%3A17.701247000000002%2C%22text%22%3A%22SCRIPT(%E6%95%B4%E4%BD%93%E4%BB%A3%E7%A0%81)%22%7D%2C%7B%22x%22%3A471.9464%2C%22y%22%3A55.791973%2C%22width%22%3A84.92210000000006%2C%22height%22%3A14.345337%2C%22text%22%3A%22SETTIMEOUT%22%7D%2C%7B%22x%22%3A472.46362%2C%22y%22%3A91.81787%2C%22width%22%3A78.22602000000006%2C%22height%22%3A14.669336000000001%2C%22text%22%3A%22SETLNTERVAL%22%7D%2C%7B%22x%22%3A472.2977%2C%22y%22%3A126.42755%2C%22width%22%3A166.45279999999997%2C%22height%22%3A18.985960000000006%2C%22text%22%3A%22SETLMMEDIATE(NODE.JS)%22%7D%2C%7B%22x%22%3A308.34534%2C%22y%22%3A143.07684%2C%22width%22%3A111.85872999999998%2C%22height%22%3A18.88977%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%22%7D%2C%7B%22x%22%3A471.9143%2C%22y%22%3A163.27759%2C%22width%22%3A101.85676000000001%2C%22height%22%3A17.02546000000001%2C%22text%22%3A%22I%2FO(NODE.JS)%22%7D%2C%7B%22x%22%3A472.57095%2C%22y%22%3A199.1479%2C%22width%22%3A91.99255%2C%22height%22%3A17.729659999999996%2C%22text%22%3A%22UL%20RENDERING%22%7D%2C%7B%22x%22%3A30.529745%2C%22y%22%3A220.11334%2C%22width%22%3A159.465875%2C%22height%22%3A34.99768%2C%22text%22%3A%22%E5%BC%82%E6%AD%A5API%E7%B1%BB%E5%9E%8B%22%7D%2C%7B%22x%22%3A473.33005%2C%22y%22%3A238.94995%2C%22width%22%3A96.80624999999998%2C%22height%22%3A13.579710000000006%2C%22text%22%3A%22POSTMESSAGE%22%7D%2C%7B%22x%22%3A474.08224%2C%22y%22%3A272.91888%2C%22width%22%3A123.99675999999994%2C%22height%22%3A15.156960000000026%2C%22text%22%3A%22MESSAGECHANNEL%22%7D%2C%7B%22x%22%3A472.82962%2C%22y%22%3A328.59946%2C%22width%22%3A97.10654%2C%22height%22%3A15.41713999999996%2C%22text%22%3A%22PROMISE.THEN%22%7D%2C%7B%22x%22%3A649.84564%2C%22y%22%3A363.91296%2C%22width%22%3A100.38671999999997%2C%22height%22%3A19.113620000000026%2C%22text%22%3A%22HTML5%E6%96%B0%E7%89%B9%E6%80%A7%22%7D%2C%7B%22x%22%3A472.76123%2C%22y%22%3A365.60483%2C%22width%22%3A127.90286999999995%2C%22height%22%3A15.724170000000015%2C%22text%22%3A%22MUTATIONOBSERVE%22%7D%2C%7B%22x%22%3A307.2041%2C%22y%22%3A382.76523%2C%22width%22%3A113.34586000000002%2C%22height%22%3A18.684230000000014%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%E7%B1%BB%E5%9E%8BAPI%22%7D%2C%7B%22x%22%3A471.781%2C%22y%22%3A401.52585%2C%22width%22%3A187.20260000000002%2C%22height%22%3A19.23828000000003%2C%22text%22%3A%22PROCESS.NEXTTICK(NODE.JS)%22%7D%2C%7B%22x%22%3A473.74316%2C%22y%22%3A436.70816%2C%22width%22%3A111.61354000000006%2C%22height%22%3A17.07430999999997%2C%22text%22%3A%22OBJECT.OBSERVE%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f1eff2%22%2C%22id%22%3A%22u76ea3fa3%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><p data-lake-id=\"u7bcafe0a\" id=\"u7bcafe0a\"><span data-lake-id=\"ua9e2ec87\" id=\"ua9e2ec87\">举个栗子：</span></p><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22%3C!--%20%E8%84%9A%E6%9C%AC%201%20--%3E%5Cn%3Cscript%3E%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('startA')%5Cn%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%AE%8F%5Cn%5CtsetTimeout(()%20%3D%3E%20console.log('A1')%2C%200)%5Cn%5Ctnew%20Promise((resolve%2C%20reject)%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ct%5Ctconsole.log('A2')%5Cn%5Ct%5Ctresolve()%5Cn%5Ct%7D).then(()%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%BE%AE%5Cn%5Ct%5Ctconsole.log('A3')%5Cn%5Ct%7D)%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('A4')%5Cn%3C%2Fscript%3E%5Cn%5Cn%3C!--%20%E8%84%9A%E6%9C%AC%202%20--%3E%5Cn%3Cscript%3E%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('startB')%5Cn%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%AE%8F%5Cn%5CtsetTimeout(()%20%3D%3E%20console.log('B2')%2C%200)%5Cn%5Ctnew%20Promise((resolve%2C%20reject)%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ct%5Ctconsole.log('B2')%5Cn%5Ct%5Ctresolve()%5Cn%5Ct%7D).then(()%20%3D%3E%20%7B%5Cn%5Ct%5Ct%2F%2F%20%E5%BC%82%E6%AD%A5%E5%BE%AE%5Cn%5Ct%5Ctconsole.log('B3')%5Cn%5Ct%7D)%5Cn%5Ct%2F%2F%20%E5%90%8C%E6%AD%A5%5Cn%5Ctconsole.log('end2')%5Cn%3C%2Fscript%3E%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22Wtvo2%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"uae643499\" id=\"uae643499\"><span data-lake-id=\"ud8625e75\" id=\"ud8625e75\">结果：</span></p><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22script%20A%5CnA2%5CnA4%5CnA3%5Cnscript%20B%5CnB2%5CnB4%5CnB3%5CnA1%5CnB1%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22OOtL5%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"u820f79d6\" id=\"u820f79d6\"><span data-lake-id=\"u7690294f\" id=\"u7690294f\">步骤：</span></p><ol list=\"ue494ead2\"><li fid=\"u4a72fb6c\" data-lake-id=\"ue58a3580\" id=\"ue58a3580\"><span data-lake-id=\"uf8e2ca5b\" id=\"uf8e2ca5b\">最开始，JS引擎将这段代码解析成两个宏任务，一个是 脚本1，一个是 脚本2。会把这两个宏任务放到宏任务队列中去。正常情况下，JS执行是先微后宏，此时微任务队列中没有队列任务，就跳过，去执行宏任务。</span></li></ol><p data-lake-id=\"ucdda22cb\" id=\"ucdda22cb\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670898463403-2dd88652-6c90-4975-9cd1-43bdb2f8db13.png%22%2C%22taskId%22%3A%22u2bdc46ca-275d-42be-bb3a-9dcdb08290e%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A326%2C%22height%22%3A270%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A30416%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A326%2C%22originHeight%22%3A270%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20SCRIPT%20B%20SCRIPT%20A%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A167.58073%2C%22y%22%3A31.147781%2C%22width%22%3A29.24122%2C%22height%22%3A11.031129000000004%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A228.64091%2C%22y%22%3A31.215631%2C%22width%22%3A28.844959999999986%2C%22height%22%3A11.528407000000005%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A43.578724%2C%22y%22%3A31.87203%2C%22width%22%3A26.387896000000005%2C%22height%22%3A9.461302%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A232.4837%2C%22y%22%3A60.712788%2C%22width%22%3A37.48680000000002%2C%22height%22%3A12.678501999999995%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A233.211%2C%22y%22%3A105.9999%2C%22width%22%3A37.65773999999999%2C%22height%22%3A9.222940000000008%2C%22text%22%3A%22SCRIPT%20A%22%7D%2C%7B%22x%22%3A63.392365%2C%22y%22%3A140.03297%2C%22width%22%3A60.99133500000001%2C%22height%22%3A13.495949999999993%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A111.28178%2C%22y%22%3A199.56544%2C%22width%22%3A36.980729999999994%2C%22height%22%3A11.016819999999996%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f2e8e0%22%2C%22id%22%3A%22uc96b1a6c%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u38f5f923\" start=\"2\"><li fid=\"uac72b9e0\" data-lake-id=\"u1d8e2c69\" id=\"u1d8e2c69\"><span data-lake-id=\"u1b3ba3f4\" id=\"u1b3ba3f4\">因为 脚本1 在上面，JS会去先执行 脚本1 ，然后就把script A 压入 【调用栈】中。</span></li></ol><ol list=\"u38f5f923\" data-lake-indent=\"1\"><li fid=\"uac72b9e0\" data-lake-id=\"u2c52c29f\" id=\"u2c52c29f\"><span data-lake-id=\"u5266c3ed\" id=\"u5266c3ed\">由于第一行代码是同步代码，所以先执行。</span></li><li fid=\"uac72b9e0\" data-lake-id=\"uf3110e48\" id=\"uf3110e48\"><span data-lake-id=\"ubf83e297\" id=\"ubf83e297\">将 timer1 压入 宏任务队列中</span></li></ol><p data-lake-id=\"u0e0b22fb\" id=\"u0e0b22fb\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899077228-3c5733f6-f95e-4e2a-9970-a4be90412ec1.png%22%2C%22taskId%22%3A%22u852c97c0-9b65-4888-ad85-cf40f8a199c%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A405%2C%22height%22%3A254%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A27642%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A405%2C%22originHeight%22%3A254%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20SCRIPT%20A%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%202%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A55.22875%2C%22y%22%3A13.841815%2C%22width%22%3A27.11262%2C%22height%22%3A10.999493999999999%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A169.22272%2C%22y%22%3A19.968452%2C%22width%22%3A30.682739999999995%2C%22height%22%3A12.101962999999998%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A232.20831%2C%22y%22%3A20.045303%2C%22width%22%3A31.26766999999998%2C%22height%22%3A11.410706000000001%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A62.4491%2C%22y%22%3A69.79634%2C%22width%22%3A39.978229999999996%2C%22height%22%3A10.284980000000004%2C%22text%22%3A%22SCRIPT%20A%22%7D%2C%7B%22x%22%3A229.73766%2C%22y%22%3A86.67399%2C%22width%22%3A39.77884%2C%22height%22%3A10.537409999999994%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A82.27115%2C%22y%22%3A160.04175%2C%22width%22%3A61.60246000000001%2C%22height%22%3A12.852779999999996%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A143.14139%2C%22y%22%3A207.97295%2C%22width%22%3A35.89725999999999%2C%22height%22%3A11.274000000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A323.3334%2C%22y%22%3A218.80884%2C%22width%22%3A15.049470000000042%2C%22height%22%3A19.04907%2C%22text%22%3A%222%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4f0ea%22%2C%22id%22%3A%22ua0c458ca%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u93e8ba59\" start=\"3\" data-lake-indent=\"1\"><li fid=\"u357bbe98\" data-lake-id=\"ua52345fc\" id=\"ua52345fc\"><span data-lake-id=\"u865ef5cd\" id=\"u865ef5cd\">new Promise() 中p1是 同步任务，立即执行，出栈</span></li><li fid=\"u357bbe98\" data-lake-id=\"uae7398fb\" id=\"uae7398fb\"><span data-lake-id=\"u438a8de3\" id=\"u438a8de3\">触发异步机制，进入 Promise.then() 中，触发回调，把A3加入微任务队列中去，等待执行</span></li></ol><p data-lake-id=\"u053fe744\" id=\"u053fe744\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899089251-145264c4-b8bd-4736-874f-227312175e60.png%22%2C%22taskId%22%3A%22ub8561ed2-194e-44e9-ad21-535a0c2c240%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A384%2C%22height%22%3A251%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A26983%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A384%2C%22originHeight%22%3A251%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20A3%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A199.43187%2C%22y%22%3A20.69535%2C%22width%22%3A25.69668999999999%2C%22height%22%3A10.932868%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A273.24594%2C%22y%22%3A20.692667%2C%22width%22%3A26.533999999999992%2C%22height%22%3A10.101140999999998%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A88.368835%2C%22y%22%3A27.368555%2C%22width%22%3A27.961204999999993%2C%22height%22%3A10.468845000000002%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A217.35045%2C%22y%22%3A96.86615%2C%22width%22%3A16.248559999999998%2C%22height%22%3A11.156289999999998%2C%22text%22%3A%22A3%22%7D%2C%7B%22x%22%3A273.11154%2C%22y%22%3A101.77619%2C%22width%22%3A41.43096000000003%2C%22height%22%3A12.222864000000001%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A123.216866%2C%22y%22%3A160.79552%2C%22width%22%3A59.656794000000005%2C%22height%22%3A13.570809999999994%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A179.78389%2C%22y%22%3A198.68031%2C%22width%22%3A36.15348999999998%2C%22height%22%3A10.751800000000003%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4e8e1%22%2C%22id%22%3A%22R6c2R%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"u93e8ba59\" start=\"5\" data-lake-indent=\"1\"><li fid=\"u357bbe98\" data-lake-id=\"u5103d5c3\" id=\"u5103d5c3\"><span data-lake-id=\"u2b244630\" id=\"u2b244630\">此时，按照“先微后宏“的顺序， 此时，微任务队列中有任务，就把A3放入调用栈中执行，输出A3，出栈（A4是同步代码，已经在A3之前执行输出）</span></li></ol><p data-lake-id=\"u3ffe4688\" id=\"u3ffe4688\" style=\"text-indent: 2em; padding-left: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670899704352-7528d448-b4dc-420d-bdb3-1fb3407e8caa.png%22%2C%22taskId%22%3A%22u9118bbad-f295-4397-a9aa-b1613dbc913%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A372%2C%22height%22%3A250%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A29144%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A372%2C%22originHeight%22%3A250%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E8%B0%83%E7%94%A8%E6%A0%88%20A1%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A171.71759%2C%22y%22%3A17.299837%2C%22width%22%3A31.007689999999997%2C%22height%22%3A11.558133000000002%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A251.90474%2C%22y%22%3A17.33274%2C%22width%22%3A30.79054000000002%2C%22height%22%3A12.413619999999998%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A69.55042%2C%22y%22%3A29.729523%2C%22width%22%3A28.01567%2C%22height%22%3A10.786437%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A266.07376%2C%22y%22%3A67.84777%2C%22width%22%3A16.307439999999986%2C%22height%22%3A11.491280000000003%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A253.10986%2C%22y%22%3A105.9978%2C%22width%22%3A41.848179999999985%2C%22height%22%3A12.005130000000008%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A99.038414%2C%22y%22%3A147.5628%2C%22width%22%3A61.936976%2C%22height%22%3A12.997140000000002%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A151.14961%2C%22y%22%3A200.6723%2C%22width%22%3A35.616090000000014%2C%22height%22%3A11.299610000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4eae4%22%2C%22id%22%3A%22ud2893cfc%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><p data-lake-id=\"ua823e556\" id=\"ua823e556\" style=\"text-indent: 2em\"><span data-lake-id=\"uacc2b669\" id=\"uacc2b669\">此时，微任务队列中没有任务了，事件循环会跳过微任务，去执行宏任务。会把script B调入调用栈中去（不是全部一下子调入调用栈中的，是按照代码先后顺序去逐行调入的）。</span></p><p data-lake-id=\"u4ac284ba\" id=\"u4ac284ba\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900133149-a369a583-4d6c-469c-9aa3-e37405606f13.png%22%2C%22taskId%22%3A%22u3b91c160-41f3-40d9-8c39-c6a287ecbdb%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A369%2C%22height%22%3A256%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A27544%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A369%2C%22originHeight%22%3A256%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20SCRIPT%20B%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%205%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A46.804646%2C%22y%22%3A13.769633%2C%22width%22%3A26.412830000000007%2C%22height%22%3A10.889165%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A182.16158%2C%22y%22%3A29.829214%2C%22width%22%3A33.299920000000014%2C%22height%22%3A12.341912999999998%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A267.19785%2C%22y%22%3A30.485334%2C%22width%22%3A33.44049000000001%2C%22height%22%3A11.939661000000001%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A46.389343%2C%22y%22%3A70.00644%2C%22width%22%3A39.46529700000001%2C%22height%22%3A10.656554%2C%22text%22%3A%22SCRIPT%20B%22%7D%2C%7B%22x%22%3A76.867714%2C%22y%22%3A132.58641%2C%22width%22%3A61.942345999999986%2C%22height%22%3A13.2363%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A127.842926%2C%22y%22%3A196.6527%2C%22width%22%3A36.109053999999986%2C%22height%22%3A10.633499999999998%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A340.58105%2C%22y%22%3A219.46819%2C%22width%22%3A14.566649999999981%2C%22height%22%3A19.51289%2C%22text%22%3A%225%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f4f1eb%22%2C%22id%22%3A%22u3fd88008%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"uc7ef8267\" start=\"3\"><li fid=\"u9cf9a514\" data-lake-id=\"u2a5b8743\" id=\"u2a5b8743\"><span data-lake-id=\"ue9b8b7b2\" id=\"ue9b8b7b2\">将B1这个宏任务加入到宏任务队列中去</span></li></ol><p data-lake-id=\"u56ca305c\" id=\"u56ca305c\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900387253-a76291b9-45b6-4c70-a4d0-5834ec85fe36.png%22%2C%22taskId%22%3A%22u4fa9cd4e-a7b0-4776-9536-70d33baf4a2%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A386%2C%22height%22%3A269%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A28521%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A386%2C%22originHeight%22%3A269%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20%E5%AE%8F%E4%BB%BB%E5%8A%A1%20B1%20B3%20A1%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%209%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A59.742905%2C%22y%22%3A31.658447%2C%22width%22%3A28.018409%2C%22height%22%3A11.288135999999998%2C%22text%22%3A%22%E8%B0%83%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A193.53918%2C%22y%22%3A34.33099%2C%22width%22%3A35.241090000000014%2C%22height%22%3A12.769913000000003%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A268.3002%2C%22y%22%3A35.13676%2C%22width%22%3A32.951599999999985%2C%22height%22%3A11.642007%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A277.83286%2C%22y%22%3A109.69742%2C%22width%22%3A20.29097999999999%2C%22height%22%3A13.493284000000003%2C%22text%22%3A%22B1%22%7D%2C%7B%22x%22%3A209.01122%2C%22y%22%3A139.96742%2C%22width%22%3A19.341260000000005%2C%22height%22%3A13.773210000000006%2C%22text%22%3A%22B3%22%7D%2C%7B%22x%22%3A279.39517%2C%22y%22%3A148.78505%2C%22width%22%3A18.467649999999992%2C%22height%22%3A12.506619999999998%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A87.33082%2C%22y%22%3A159.97743%2C%22width%22%3A61.61746999999998%2C%22height%22%3A13.068330000000003%2C%22text%22%3A%22EVENT%20LOOP%22%7D%2C%7B%22x%22%3A142.80788%2C%22y%22%3A223.24193%2C%22width%22%3A35.42348999999999%2C%22height%22%3A10.716260000000005%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%2C%7B%22x%22%3A350.27515%2C%22y%22%3A228.74152%2C%22width%22%3A12.176510000000007%2C%22height%22%3A18.404740000000004%2C%22text%22%3A%229%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f3eae4%22%2C%22id%22%3A%22ua16f381a%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><ol list=\"uae54abcc\" start=\"4\"><li fid=\"u1f24f1dd\" data-lake-id=\"u96237d7b\" id=\"u96237d7b\"><span data-lake-id=\"ubfda63e6\" id=\"ubfda63e6\">B2是同步代码，加入调用栈中，执行，输出， 出栈；输出B4，scriptB宏任务就结束了，调用栈清空。</span></li><li fid=\"u1f24f1dd\" data-lake-id=\"uc0249e91\" id=\"uc0249e91\"><span data-lake-id=\"uf15e2edf\" id=\"uf15e2edf\">触发异步回调Promise.then()，将B3加入到微任务队列中去。</span></li><li fid=\"u1f24f1dd\" data-lake-id=\"u2122a714\" id=\"u2122a714\"><span data-lake-id=\"u95d73241\" id=\"u95d73241\">此时，如图6，按照先微后宏的顺序，会依次把B3、A1、B1输出。</span></li></ol><p data-lake-id=\"u8ec52554\" id=\"u8ec52554\" style=\"text-indent: 2em\"><card type=\"inline\" name=\"image\" value=\"data:%7B%22src%22%3A%22https%3A%2F%2Fcdn.nlark.com%2Fyuque%2F0%2F2022%2Fpng%2F2324645%2F1670900756939-879e78a1-0df5-4020-8635-691925a5e40a.png%22%2C%22taskId%22%3A%22u072a3081-7700-4e2e-9b97-1ad6333f86a%22%2C%22clientId%22%3A%22u9fcda738-8167-4%22%2C%22originalType%22%3A%22binary%22%2C%22width%22%3A366%2C%22height%22%3A251%2C%22linkTarget%22%3A%22_blank%22%2C%22name%22%3A%22image.png%22%2C%22size%22%3A25361%2C%22from%22%3A%22paste%22%2C%22originWidth%22%3A366%2C%22originHeight%22%3A251%2C%22ratio%22%3A1%2C%22status%22%3A%22done%22%2C%22style%22%3A%22none%22%2C%22search%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%20%E6%B6%A6%E7%94%A8%E6%A0%88%20%E5%BE%AE%E4%BB%BB%E5%8A%A1%20B3%20A1%20B1%20EVENT%20LOOP%20%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%2C%22ocrLocations%22%3A%5B%7B%22x%22%3A260.6627%2C%22y%22%3A14.635081%2C%22width%22%3A33.27660000000003%2C%22height%22%3A12.422294%2C%22text%22%3A%22%E5%AE%8F%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A52.539337%2C%22y%22%3A16.41581%2C%22width%22%3A27.875327999999996%2C%22height%22%3A10.046610000000001%2C%22text%22%3A%22%E6%B6%A6%E7%94%A8%E6%A0%88%22%7D%2C%7B%22x%22%3A204.57423%2C%22y%22%3A16.65014%2C%22width%22%3A32.659400000000005%2C%22height%22%3A12.075109999999999%2C%22text%22%3A%22%E5%BE%AE%E4%BB%BB%E5%8A%A1%22%7D%2C%7B%22x%22%3A65.88245%2C%22y%22%3A85.263794%2C%22width%22%3A14.344073999999992%2C%22height%22%3A9.263936000000001%2C%22text%22%3A%22B3%22%7D%2C%7B%22x%22%3A66.06218%2C%22y%22%3A103.33198%2C%22width%22%3A14.361810000000006%2C%22height%22%3A9.90764%2C%22text%22%3A%22A1%22%7D%2C%7B%22x%22%3A65.22076%2C%22y%22%3A122.781685%2C%22width%22%3A14.717280000000002%2C%22height%22%3A10.441074999999998%2C%22text%22%3A%22B1%22%7D%2C%7B%22x%22%3A102.84731%2C%22y%22%3A140.57848%2C%22width%22%3A33.25686000000002%2C%22height%22%3A11.42962%2C%22text%22%3A%22EVENT%22%7D%2C%7B%22x%22%3A106.36553%2C%22y%22%3A155.89883%2C%22width%22%3A27.92662999999999%2C%22height%22%3A11.717880000000008%2C%22text%22%3A%22LOOP%22%7D%2C%7B%22x%22%3A145.52036%2C%22y%22%3A199.69753%2C%22width%22%3A35.52101999999999%2C%22height%22%3A10.914670000000001%2C%22text%22%3A%22%E5%85%88%E5%BE%AE%E5%90%8E%E5%AE%8F%22%7D%5D%2C%22showTitle%22%3Afalse%2C%22title%22%3A%22%22%2C%22rotation%22%3A0%2C%22crop%22%3A%5B0%2C0%2C1%2C1%5D%2C%22averageHue%22%3A%22%23f5f4f0%22%2C%22id%22%3A%22u3872b20d%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card></p><h3 data-lake-id=\"E8CTa\" id=\"E8CTa\"><span data-lake-id=\"u34a521f2\" id=\"u34a521f2\">总结</span></h3><p data-lake-id=\"ubb375812\" id=\"ubb375812\"><span data-lake-id=\"uba060527\" id=\"uba060527\">&lt;script&gt;标签是一个宏任务，因为这是一个代码段的入口，且必须要加载。</span></p><h4 data-lake-id=\"d7a7m\" id=\"d7a7m\"><span data-lake-id=\"u7fd1fbd6\" id=\"u7fd1fbd6\">为什么JS的微任务优先于宏任务？</span></h4><card type=\"inline\" name=\"codeblock\" value=\"data:%7B%22mode%22%3A%22javascript%22%2C%22code%22%3A%22%3C!DOCTYPE%20html%3E%5Cn%3Chtml%20lang%3D%5C%22en%5C%22%3E%5Cn%3Chead%3E%5Cn%20%20%20%20%3Cmeta%20charset%3D%5C%22UTF-8%5C%22%3E%5Cn%20%20%20%20%3Cmeta%20http-equiv%3D%5C%22X-UA-Compatible%5C%22%20content%3D%5C%22IE%3Dedge%5C%22%3E%5Cn%20%20%20%20%3Cmeta%20name%3D%5C%22viewport%5C%22%20content%3D%5C%22width%3Ddevice-width%2C%20initial-scale%3D1.0%5C%22%3E%5Cn%20%20%20%20%3Ctitle%3EDocument%3C%2Ftitle%3E%5Cn%3C%2Fhead%3E%5Cn%3Cbody%3E%5Cn%20%20%20%20%3Cscript%3E%5Cn%20%20%20%20%20%20%20%20setTimeout(()%20%3D%3E%20%7B%5Cn%20%20%20%20%20%20%20%20%20%20%20console.log(1)%20%5Cn%20%20%20%20%20%20%20%20%7D%2C%200)%3B%5Cn%5Cn%20%20%20%20%20%20%20%20new%20Promise((rej)%3D%3Erej(2)).then((data)%3D%3E%5Cn%20%20%20%20%20%20%20%20%20%20%20%20console.log(data)%5Cn%20%20%20%20%20%20%20%20)%5Cn%20%20%20%20%3C%2Fscript%3E%5Cn%3C%2Fbody%3E%5Cn%3C%2Fhtml%3E%22%2C%22autoWrap%22%3Afalse%2C%22lineNumbers%22%3Atrue%2C%22heightLimit%22%3Atrue%2C%22collapsed%22%3Afalse%2C%22hideToolbar%22%3Afalse%2C%22name%22%3A%22%22%2C%22tabSize%22%3Anull%2C%22indentWithTab%22%3Afalse%2C%22lightLines%22%3A%5B%5D%2C%22foldLines%22%3A%5B%5D%2C%22theme%22%3A%22Github%20Light%22%2C%22__spacing%22%3A%22both%22%2C%22id%22%3A%22tS8Mf%22%2C%22margin%22%3A%7B%22top%22%3Atrue%2C%22bottom%22%3Atrue%7D%7D\"></card><p data-lake-id=\"u3ec60c38\" id=\"u3ec60c38\" style=\"text-indent: 2em\"><span data-lake-id=\"uca13b636\" id=\"uca13b636\">实际上JS会先执行一个宏任务，再执行微任务，但是为什么微任务会先执行呢？</span></p><p data-lake-id=\"uec188ac4\" id=\"uec188ac4\" style=\"text-indent: 2em\"><span data-lake-id=\"u8c5d3f51\" id=\"u8c5d3f51\">其实真正造成微任务优先级大于宏任务，是因为script本身就是一个宏任务，所以会先执行script这个宏任务，这个宏任务执行完又添加了一个宏任务（计时器），一个微任务（promise），但是执行完一个宏任务，该执行当前所有的微任务，所以先输出2，执行完微任务，再去循环调用，再执行一个宏任务，也就是定时器，执行完，发现微任务为空，就暂停，等待任务的到来，这就是事件循环的原理eventloop。</span></p><p data-lake-id=\"u355bc0ac\" id=\"u355bc0ac\" style=\"text-indent: 2em\"><span data-lake-id=\"ud09ca3fc\" id=\"ud09ca3fc\">所以，在做一些面试题的过程中，我们只需要记住微任务优先级大于宏任务就可以得出真正的答案。</span></p>",
+    "public": 1,
+    "status": 1,
+    "view_status": 0,
+    "read_status": 1,
+    "likes_count": 0,
+    "comments_count": 0,
+    "content_updated_at": "2022-12-13T03:27:52.000Z",
+    "deleted_at": null,
+    "created_at": "2022-12-13T02:02:29.000Z",
+    "updated_at": "2022-12-13T03:27:52.000Z",
+    "published_at": "2022-12-13T03:27:52.000Z",
+    "first_published_at": "2022-12-13T02:43:01.389Z",
+    "word_count": 997,
+    "cover": "https://cdn.nlark.com/yuque/0/2022/png/2324645/1670897426854-c1daf2d5-449d-48a3-9264-8fc0bca3f163.png",
+    "description": "--- title: 为什么script 标签是一个宏任务categories: JSdate: 2022-11-05updated: 2022-11-05tags: [JS,eventloop]cover: https://gimg2.baidu.com/image_search/src=h...",
+    "custom_description": null,
+    "hits": 0,
+    "_serializer": "v2.doc_detail"
+  },
+  {
+    "id": 109145514,
+    "slug": "shkqwao85pxqdcgl",
+    "title": "JS 垃圾回收机制",
+    "book_id": 35046022,
+    "book": {
+      "id": 35046022,
+      "type": "Book",
+      "slug": "aiudvz",
+      "name": "hexo-blog",
+      "user_id": 2324645,
+      "description": "杉菜酱子の博客",
+      "creator_id": 2324645,
+      "public": 1,
+      "items_count": 15,
+      "likes_count": 0,
+      "watches_count": 0,
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
+      "created_at": "2022-11-15T07:22:50.000Z",
+      "namespace": "lifang-hmj24/aiudvz",
+      "user": {
+        "id": 2324645,
+        "type": "User",
+        "login": "lifang-hmj24",
+        "name": "李芳",
+        "description": "啦啦啦",
+        "avatar_url": "https://cdn.nlark.com/yuque/0/2020/png/2324645/1597130535124-avatar/6404390c-c4b2-4ab9-aa65-8728cc4a0ff4.png",
+        "books_count": 66,
+        "public_books_count": 3,
+        "followers_count": 0,
+        "following_count": 5,
+        "created_at": "2020-08-08T02:59:10.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
+        "_serializer": "v2.user"
+      },
+      "_serializer": "v2.book"
+    },
+    "user_id": 2324645,
+    "creator": {
+      "id": 2324645,
+      "type": "User",
+      "login": "lifang-hmj24",
+      "name": "李芳",
+      "description": "啦啦啦",
+      "avatar_url": "https://cdn.nlark.com/yuque/0/2020/png/2324645/1597130535124-avatar/6404390c-c4b2-4ab9-aa65-8728cc4a0ff4.png",
+      "books_count": 66,
+      "public_books_count": 3,
+      "followers_count": 0,
+      "following_count": 5,
+      "created_at": "2020-08-08T02:59:10.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -92,11 +171,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -111,7 +190,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -129,7 +208,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -171,11 +250,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -190,7 +269,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -208,7 +287,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -250,11 +329,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -269,7 +348,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -287,7 +366,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -329,11 +408,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -348,7 +427,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -366,7 +445,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -408,11 +487,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -427,7 +506,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -445,7 +524,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -487,11 +566,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -506,7 +585,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -524,7 +603,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -566,11 +645,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -585,7 +664,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -603,7 +682,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -645,11 +724,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -664,7 +743,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -682,7 +761,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -724,11 +803,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -743,7 +822,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -761,7 +840,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -803,11 +882,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -822,7 +901,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -840,7 +919,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -882,11 +961,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -901,7 +980,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -919,7 +998,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -961,11 +1040,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -980,7 +1059,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -998,7 +1077,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
@@ -1040,11 +1119,11 @@
       "description": "杉菜酱子の博客",
       "creator_id": 2324645,
       "public": 1,
-      "items_count": 14,
+      "items_count": 15,
       "likes_count": 0,
       "watches_count": 0,
-      "content_updated_at": "2022-12-13T01:43:37.243Z",
-      "updated_at": "2022-12-13T01:43:37.000Z",
+      "content_updated_at": "2022-12-13T03:27:51.881Z",
+      "updated_at": "2022-12-13T03:27:52.000Z",
       "created_at": "2022-11-15T07:22:50.000Z",
       "namespace": "lifang-hmj24/aiudvz",
       "user": {
@@ -1059,7 +1138,7 @@
         "followers_count": 0,
         "following_count": 5,
         "created_at": "2020-08-08T02:59:10.000Z",
-        "updated_at": "2022-12-12T08:03:59.000Z",
+        "updated_at": "2022-12-13T02:02:29.000Z",
         "_serializer": "v2.user"
       },
       "_serializer": "v2.book"
@@ -1077,7 +1156,7 @@
       "followers_count": 0,
       "following_count": 5,
       "created_at": "2020-08-08T02:59:10.000Z",
-      "updated_at": "2022-12-12T08:03:59.000Z",
+      "updated_at": "2022-12-13T02:02:29.000Z",
       "_serializer": "v2.user"
     },
     "format": "lake",
