@@ -3,8 +3,8 @@ title: Vue 响应式原理和双向绑定原理区分
 categories: Vue
 date: 2022-11-18
 updated: 2022-11-18
-tags: Vue
-cover: https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/20221208162638.png
+tags: [Vue, 响应式, 双向绑定]
+cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fc-ssl.duitang.com%2Fuploads%2Fitem%2F201612%2F07%2F20161207211710_Wuk3X.thumb.700_0.jpeg&refer=http%3A%2F%2Fc-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1673487417&t=322544612813ded880ff4f5d21be2090
 ---
 
 # 数据响应式原理
