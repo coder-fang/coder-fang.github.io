@@ -1,6 +1,7 @@
 ---
 title: requestAnimationFrame 是宏任务还是微任务？
 categories: JS
+date: 2022-11-02
 updated: 2022-11-02
 tags: [JS, EventLoop]
 cover: https://img.zcool.cn/community/01a454564ecc1b6ac7251c942be736.jpg@3000w_1l_2o_100sh.jpg
