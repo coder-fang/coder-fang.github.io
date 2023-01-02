@@ -62,6 +62,12 @@ let nObj = new Proxy(obj, {
 });
 ```
 
+## 总结
+
+- 在 new Vue() 后，Vue 会调用\_init 函数进行初始化，也就是 init 过程，在此过程中 Data 通过 Observer 转换成了 getter/setter 形式，对数据追踪变化，当被设置的对象被读取时会执行 getter 函数，而在当被赋值时会执行 setter 函数。
+- 当 render function 执行时，因为会读取所需对象的值，所以会触发 getter 函数从而将 Watcher 添加到依赖中进行依赖收集。
+- 在修改对象的值时，会触发对应的 setter，setter 通知之前**依赖收集**得到的 Dep 中的每一个 Watcher，告诉它们自己的值改变了，需要重新渲染视图。此时，这些 Watcher 就会开始调用 update 来更新视图。
+
 # 数据双向绑定原理
 
 可以通过 v-model 和修饰符.sync 两种方式实现，像在组件中使用 v-model 就属于双向绑定。
