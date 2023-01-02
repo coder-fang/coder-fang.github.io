@@ -9,7 +9,7 @@ cover: https://img1.baidu.com/it/u=153269378,1555242931&fm=253&fmt=auto&app=120&
 
 compile 编译可以分成 parse、optimize 与 generate 三个阶段，最终需要得到 render function。
 
-### parse
+## parse
 
 parse 会用正则等方式将 template 模板中进行字符串解析，得到指令、class、style 等数据，形成 AST。
 最终得到的 AST 通过一些特定的属性，能够比较清晰地描述出标签的属性以及依赖关系。
@@ -287,3 +287,304 @@ tokens = ["hello,", _s(name), "."];
 ```
 
 ### processIf 与 processFor
+
+如何处理 v-if 以及 v-for 的 Vue.js 表达式？
+只需要在解析头标签的内容中加入此表达式的解析函数即可，此时，v-for 之类的指令已经在属性解析时存入了 attrsMap 中了。
+
+```js
+if(html.match(startTagOpen)){
+    const startTagMatch = parseStartTag()
+    const element = {
+        type: 1,
+        tag: startTagMatch.tagName,
+        attrsList: startTagMatch.attrs,
+        attrsMap: makeAttrsMap(startTagMatch.attrs),
+        parent: currentParent,
+        children: []
+    };
+    processIf(element);
+    processFor(element);
+    if(!root){
+        root = element;
+    }
+    if(currentParent){
+        currentParent.children.push(element);
+    }
+    stack.push(element);
+    currentParent = element;
+    continue;
+}
+```
+
+首先，我们需要定义一个`getAndRemoveAttr` 函数，用来从`el` 的`attrsMap` 属性或 `attrsList` 属性中取出 `name` 对应值。
+
+```js
+function getAndRemoveAttr(el, name) {
+  let val;
+  if ((val = el.attrsMap[name]) != null) {
+    const list = el.attrsList;
+    for (let i = 0, l = list.length; i < l; i++) {
+      if (list[i].name === name) {
+        list.splice(i, 1);
+        break;
+      }
+    }
+  }
+  return val;
+}
+```
+
+如何调用？
+
+```js
+// 比如，解析示例的div标签属性。
+getAndRemoveAttr(el, "v-for");
+```
+
+> 可以得到“item in sz”
+
+有了此函数，就可以开始实现 processFor 与 processIf 了。
+v-for 会将指令解析成 for 属性和 alias 属性，而 v-if 会将条件都存入 ifConditions 数组中。
+
+```js
+function processFor(el){
+    let exp;
+    if((exp = getAndRemoveAttr(el,'v-for'))){
+        const inMatch = exp.match(forAliasRE)
+        el.for = inMatch[2].trim()
+        el.alias = inMatch[1].trim()
+    }
+}
+function processIf(el){
+    const exp = getAndRemoveAttr(el,'v-if')
+    if(exp){
+        el.if = exp
+        if(!el.ifConditions){
+            el.ifConditions = []
+        }
+        el.ifConditions.push([
+            exp: exp,
+            block: el
+        ]);
+    }
+}
+```
+
+## optimize
+
+优化。
+
+> 此阶段涉及到 patch 过程，因为 patch 的过程实际上是将 VNode 节点进行一层一层的比对，然后将差异更新到视图上。
+> 一些静态节点是不会根据数据变化而产生变化的，这些节点我们没有比对的需求，是不是可以跳过这些静态节点的比对，从而节省一些性能呢？
+
+那么我们就需要为静态的节点做上一些标记，在 patch 时，我们就可以直接跳过这些被标记的节点的比对，从而达到优化的目的。
+经过 optimize 这层的处理，每个节点会加上 static 属性，来标记是否是静态的。
+
+得到结果：
+
+```js
+{
+    'attrsMap': {
+        ':class': 'c',
+        'class': 'demo',
+        'v-if': 'isShow'
+    },
+    'classBinding': 'c',
+    'if': 'isShow',
+    'ifConditions': [
+        'exp': 'isShow'
+    ],
+    'staticClass': 'demo',
+    'tag': 'div',
+    /* 静态标志 */
+    'static': false,
+    'children': [
+        {
+            'attrsMap': {
+                'v-for': "item in sz"
+            },
+            'static': false,
+            'alias': "item",
+            'for': 'sz',
+            'forProcessed': true,
+            'tag': 'span',
+            'children': [
+                {
+                    'expression': '_s(item)',
+                    'text': '{{item}}',
+                    'static': false
+                }
+            ]
+        }
+    ]
+}
+```
+
+### 实现 optimize 函数
+
+#### isStatic
+
+首先实现一个 isStatic 函数，传入一个 node 判断该 node 是否是静态节点。<br>
+判断的标准是: 当 type 为 2 则是非静态节点，当 type 为 3,时则是静态节点。如果存在 if 或 for 这样的条件时（），也是非静态节点。
+
+```js
+function isStatic(node) {
+  if (node.type === 2) {
+    return false;
+  }
+  if (node.type === 3) {
+    return true;
+  }
+  return !node.if && node.for;
+}
+```
+
+#### markStatic
+
+markStatic 为所有的节点标记上 static，遍历所有节点通过 isStatic 来判断当前节点是否是静态节点，此外，会遍历当前节点的所有子节点，如果子节点是非静态节点，那么当前节点也是非静态节点。
+
+```js
+function markStatic(node) {
+  node.static = isStatic(node);
+  if (node.type === 1) {
+    for (let i = 0, l = node.children.length; i < 1; i++) {
+      const children = node.children[i];
+      markStatic(child);
+      if (!child.static) {
+        node.static = false;
+      }
+    }
+  }
+}
+```
+
+#### markStaticRoots
+
+接下来是 markStaticRoots 函数，用来标记 staticRoot（静态根）。这个函数实现比较简单，简单来说，就是如果当前节点是静态节点，同时，满足该节点并不是只有一个文本节点左右子节点时，标记 staticRoot 为 true，否则为 false。
+
+```js
+function markStaticRoots(node) {
+  if (node.type === 1) {
+    if (
+      node.static &&
+      node.children.length &&
+      !(node.children.length === 1 && node.children[0].type === 3)
+    ) {
+      node.staticRoot = true;
+      return;
+    } else {
+      node.staticRoot = false;
+    }
+  }
+}
+```
+
+有了以上函数，就可以实现 optimize 了。
+
+```js
+function optimize(rootAst) {
+  markStatic(rootAst);
+  markStaticRoot(rootAst);
+}
+```
+
+## generate
+
+generate 会将 AST 转化为 render function 字符串，最终得到 render 字符串以及 staticRenderFns 字符串。
+
+如何实现 generate？
+
+### genIf
+
+首先处理一个 if 条件的 genIf 函数。
+
+```js
+function genIf(el){
+    el.ifProcessd = true
+    if(!el.ifConditions.length){
+        return '_e()'
+    }
+    return `(${el.ifConditions[0].exp})?${genElement(el.ifConditions[0].block): _e()}`
+}
+```
+
+### genFor
+
+然后是处理 for 循环的函数。
+
+```js
+function genFor(el) {
+  el.forProcessed = true;
+  const exp = el.for;
+  const alias = el.alias;
+  const iterator1 = el.iterator1 ? `,${el.iterator1}` : "";
+  const iterator2 = el.iterator2 ? `,${el.iterator2}` : "";
+
+  return (
+    `_l((${exp}),` +
+    `function(${alias}${iterator1}${iterator2}){` +
+    `return ${genElement(el)}` +
+    "})"
+  );
+}
+```
+
+### genText
+
+处理文本节点的函数。
+
+```js
+function genText(el) {
+  return `_v(${el.expression})`;
+}
+```
+
+### genElement
+
+是处理节点的函数，它依赖 genChildren 以及 genNode。
+
+- genElement 会根据当前节点是否有 if 或 for 标记然后判断是否要用 genIf 或者 genFor 处理，否则通过 genChildren 处理子节点，同时得到 staticClass、class 等属性。
+- genChildren 比较简单，遍历所有子节点，通过 genNode 处理后用`,`隔开拼接成字符串。
+- genNode 则是根据 type 来判断该节点是用文本节点`genText` ，还是标签节点`genElement` 来处理。
+
+```js
+function genNode(el) {
+  if (el.type === 1) {
+    return genElement(el);
+  } else {
+    return genText(el);
+  }
+}
+function genChildren(el) {
+  const children = el.children;
+  if (children && children.length > 0) {
+    return `${children.map(genNode).join(",")}`;
+  }
+}
+function genElement(el) {
+  if (el.if && !el.ifProcessed) {
+    return genIf(el);
+  } else if (el.for && !el.ifProcessed) {
+    return genFor(el);
+  } else {
+    const children = genChildren(el);
+    let code;
+    code = `_c('${el.tag},'{
+        staticClass: ${el.attrsMap && el.attrsMap[":class"]},
+        class: ${el.attrsMap && el.attrsMap["class"]},
+    }${children ? `,${children}` : ""})`;
+    return code;
+  }
+}
+```
+
+最后，我们使用上面的函数来实现 generate，只需要将整个 AST 传入后判断是否为空，为空则返回一个 div 标签，否则通过 generate 来处理。
+
+```js
+function generate(rootAst){
+    const code = rootAst ? genElement(rootAst) : '_c('div')'
+    return {
+        render: `with(this){return ${code}}`
+    }
+}
+```
