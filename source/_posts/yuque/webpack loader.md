@@ -413,3 +413,94 @@ module.exports = function (source) {
   this.callback(null, html);
 };
 ```
+
+在 webpack.config.js 使用这个加载器：
+
+```js
+const path = require("path");
+
+module.exports = {
+  entry: "./src/index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
+  },
+  devServer: {
+    contentBase: "./dist",
+    overlay: {
+      warnings: true,
+      errors: true,
+    },
+    open: true,
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        // use: path.resolve("./src/myLoader/my-loader.js"),
+        use: [
+          {
+            loader: "my-loader.js",
+            options: {
+              flag: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.md$/,
+        use: [
+          {
+            loader: "md-loader",
+          },
+        ],
+      },
+    ],
+  },
+  resolveLoader: {
+    modules: ["node_modules", "./src/myLoader"],
+  },
+};
+```
+
+使用；
+在 index.js 中加载一个 md 文件
+
+```js
+document.write("hello word");
+
+import mdHtml from "./test.md";
+const content = document.createElement("div");
+content.className = "content";
+content.innerHTML = mdHtml;
+document.body.appendChild(content);
+```
+
+beautify.js
+
+```js
+module.exports = function ModifyStructure(html) {
+  // 把h3和h2开头的切成数组
+  const htmlList = html
+    .replace(/<h3/g, "$*(<h3")
+    .replace(/<h2/g, "$*(<h2")
+    .split("$*(");
+
+  // 给他们套上 .card 类名的 div
+  return htmlList
+    .map((item) => {
+      if (item.indexOf("<h3") !== -1) {
+        return `<div class="card card-3">${item}</div>`;
+      } else if (item.indexOf("<h2") !== -1) {
+        return `<div class="card card-2">${item}</div>`;
+      }
+      return item;
+    })
+    .join("");
+};
+```
+
+效果：
+![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/1672747018651_52C3B74A-1F54-4c5c-A4A9-E23DDBE1812C.png)
+
+[**github 地址**](https://github.com/coder-fang/sc-loader)
