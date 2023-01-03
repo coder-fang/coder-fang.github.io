@@ -16,6 +16,8 @@ cover: https://gimg2.baidu.com/image_search/src=http%3A%2F%2Flmg.jj20.com%2Fup%2
 本质上是一个 node 模块，符合 webpack 中一切皆模块的思想。
 由于它是一个 node 模块，必须导出一些东西。loader 是一个函数，在该函数中对接收到的内容进行转换，然后返回转换后的结果。
 
+当 webpack 解析资源时，会调用相应的 loader 去处理，loader 接受到文件内容作为参数，返回内容出去。
+
 ## 常见的 loader 有哪些
 
 ### css-loader 和 style-loader
@@ -389,6 +391,16 @@ module.exports.raw = true;
 
 ### 实现一个渲染 markdown 文档 loader
 
+需求：
+
+- 支持 md 文件的使用
+- 支持 Vue 组件使用
+- 支持 Vue 内置模板声明
+- 解析并标记 Vue 模板位置
+- 匹配代码块内容，并添加到组件中
+
+#### 支持 md 文件的使用
+
 安装 md 转 html 的依赖。
 
 > npm i markdown-it@12.0.6 -D
@@ -502,5 +514,9 @@ module.exports = function ModifyStructure(html) {
 
 效果：
 ![](https://cdn.jsdelivr.net/gh/coder-fang/myBlogImgRespository/img/1672747018651_52C3B74A-1F54-4c5c-A4A9-E23DDBE1812C.png)
+
+#### 支持 Vue 组件使用
+
+上面我们已经通过插件 markdown-it 解析并生成 html 返回，使我们能够支持 md 文件的渲染展示。现在我们需要支持在 md 文件中写 Vue 组件。
 
 [**github 地址**](https://github.com/coder-fang/sc-loader)
