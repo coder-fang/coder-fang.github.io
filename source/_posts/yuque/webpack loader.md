@@ -256,7 +256,7 @@ module.exports = function (source, sourceMap) {
 
 加载本地 loader 的方式：
 
-使用 path.resolve：
+1. 使用 path.resolve：
 
 ```js
 const path = require("path");
@@ -273,6 +273,26 @@ module.exports = {
 };
 ```
 
+2. ResolveLoader
+   先去 node_modules 下找 my-loader，如果找不到，会去`./src/myLoader`下找。
+
+```js
+module.exports = {
+  //...
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: ["my-loader"],
+      },
+    ],
+  },
+  resolveLoader: {
+    modules: ["node_modules", "./src/myLoader"],
+  },
+};
+```
+
 > 一个 loader 的职责是单一的，使每个 loader 易维护。
 
 如果源文件需要分多步转换才能正常使用，通过多个 loader 进行转换。当调用多个 loader 进行文件转换时，每个 loader 都会链式执行。
@@ -282,3 +302,114 @@ module.exports = {
 因此，我们在编写 loader 时要保证其职责单一，只需关心输入与输出。
 
 ### option 配置信息
+
+```js
+use: [{
+    loader: "./src/myLoader/my-loader.js",
+    options: {
+        flag: true,
+    },
+}, ],
+```
+
+在 loader 中获取这个写入配置信息：
+
+可以使用 webpack 提供的 loader-utils 工具。
+
+在 loader 中修改：
+
+```js
+const loaderUtils = require("loader-utils");
+module.exports = function (source) {
+  // 获取到用户给当前 Loader 传入的 options
+  const options = loaderUtils.getOptions(this);
+  console.log("options-->", options);
+};
+```
+
+### 缓存
+
+如果为每个构建重新执行重复的转换操作，webpack 构建可能会变得非常慢。
+
+webpack 默认会缓存所有的 loader 处理结果，即当待处理的文件或依赖没有变化时，不会再次调用对应的 loader 进行转换操作。
+
+```js
+module.exports = function (source) {
+  // 开始缓存
+  this.cacheable && this.cacheable();
+  // 在这里按照你的需求处理 source
+  return source.replace("word", ", I am sc");
+};
+```
+
+一般开启默认缓存，如果不想 webpack 这个 loader 进行缓存，也可以关闭缓存。
+
+```js
+module.exports = function (source) {
+  // 关闭缓存
+  this.cacheable(false);
+  // 在这里按照你的需求处理 source
+  return source.replace("word", ", I am sc");
+};
+```
+
+### 同步与异步
+
+某些情况下，转换步骤只能异步进行。
+
+例如，需要发出网络请求以获取结果。如果使用同步方式，网络请求会阻塞整个构建，导致构建十分缓慢。
+
+```js
+module.exports = function (source) {
+  // 告诉 Webpack 本次转换是异步的，Loader 会在 callback 中回调结果
+  var callback = this.async();
+  // someAsyncOperation 代表一些异步的方法
+  someAsyncOperation(source, function (err, result, sourceMaps, ast) {
+    // 通过 callback 返回异步执行后的结果
+    callback(err, result, sourceMaps, ast);
+  });
+};
+```
+
+### 处理二进制数据
+
+默认情况下，webpack 传递给 loader 的原始内容是一个 UTF-8 格式编码的字符串。但是在某些场景下，加载器处理的不是文本文件，而是二进制文件。
+
+```js
+module.exports = function (source) {
+  // 在 exports.raw === true 时，Webpack 传给 Loader 的 source 是 Buffer 类型的
+  source instanceof Buffer === true;
+  // Loader 返回的类型也可以是 Buffer 类型的
+  // 在 exports.raw !== true 时，Loader 也可以返回 Buffer 类型的结果
+  return source;
+};
+// 通过 exports.raw 属性告诉 Webpack 该 Loader 是否需要二进制数据
+module.exports.raw = true;
+```
+
+### 实现一个渲染 markdown 文档 loader
+
+安装 md 转 html 的依赖。
+
+> npm i markdown-it@12.0.6 -D
+
+新建一个 loader
+
+/src/MyLoader/md-loader.js
+
+```js
+const { getOptions } = require("loader-utils");
+const MarkdownIt = require("markdown-it");
+const beautify = require("./beautify");
+
+module.exports = function (source) {
+  const options = getOptions(this) || {};
+  const md = new MarkdownIt({
+    html: true,
+    ...options,
+  });
+  let html = beautify(md.render(source));
+  html = `module.exports = ${JSON.stringify(html)}`;
+  this.callback(null, html);
+};
+```
