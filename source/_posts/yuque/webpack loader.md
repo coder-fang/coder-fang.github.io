@@ -1,5 +1,5 @@
 ---
-title: webpack loader
+title: 实现一个webpack loader
 categories: 知识
 date: 2022-12-05
 updated: 2022-12-05
@@ -463,7 +463,7 @@ module.exports = {
 };
 ```
 
-使用；
+使用：
 在 index.js 中加载一个 md 文件
 
 ```js
