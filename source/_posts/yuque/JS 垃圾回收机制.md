@@ -45,7 +45,7 @@ cover: https://img1.baidu.com/it/u=3556875364,2935983115&fm=253&fmt=auto&app=138
 > - 基本数据类型：大小固定，值保存在`栈内存`中，可通过值直接访问。
 > - 引用数据类型：大小不固定（∵ 可加属性），`栈内存`中存着指针，指向`堆内存`中的对象空间， 通过引用来访问。
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670837158434-d02b829e-2ca6-4457-9178-7e528051eba5.png#averageHue=%23fcf9f8&clientId=u8f053162-afe4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=356&id=ua3796757&margin=%5Bobject%20Object%5D&name=image.png&originHeight=356&originWidth=885&originalType=binary&ratio=1&rotation=0&showTitle=false&size=25990&status=done&style=none&taskId=uaadda59b-863b-401d-993c-56443f41c76&title=&width=885)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670837158434-d02b829e-2ca6-4457-9178-7e528051eba5.png#averageHue=%23fcf9f8&clientId=u8f053162-afe4-4&from=paste&height=356&id=ua3796757&originHeight=356&originWidth=885&originalType=binary&ratio=1&rotation=0&showTitle=false&size=25990&status=done&style=none&taskId=uaadda59b-863b-401d-993c-56443f41c76&title=&width=885)
 
 - 栈内存的内存都是`操作系统自动分配和释放回收的`（由于栈内存所存的基础数据类型大小是固定的）
 - JS 堆内存需要 JS 引擎手动释放这些内存（由于堆内存所存大小不固定，系统无法自动释放回收）
@@ -138,12 +138,12 @@ orinoco 是 V8 的垃圾回收器的项目代号，为了提升用户体验，�
 ##### 并发（Concurrent）
 
 并发式 GC 允许在垃圾回收时不需要将主线程挂起，两者可以同时进行，只有在个别时候需要短暂下来让垃圾回收器做一些特殊的操作。但是这种方式也要面对增量回收的问题，就是在垃圾回收过程中，由于 JS 代码在执行，堆中的对象的引用关系随时可能会变化，所以也要进行`写屏障`操作。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670851619218-0efd0aee-9227-4585-9745-d95f8bcacd7c.png#averageHue=%23b5e19a&clientId=u8f053162-afe4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=147&id=u0aee8473&margin=%5Bobject%20Object%5D&name=image.png&originHeight=147&originWidth=718&originalType=binary&ratio=1&rotation=0&showTitle=false&size=56932&status=done&style=none&taskId=u19ceca22-5e5e-4460-bade-47f1ebaf8b4&title=&width=718)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670851619218-0efd0aee-9227-4585-9745-d95f8bcacd7c.png#averageHue=%23b5e19a&clientId=u8f053162-afe4-4&from=paste&height=147&id=u0aee8473&originHeight=147&originWidth=718&originalType=binary&ratio=1&rotation=0&showTitle=false&size=56932&status=done&style=none&taskId=u19ceca22-5e5e-4460-bade-47f1ebaf8b4&title=&width=718)
 
 ##### 并行
 
 并行式 GC 运行主线程和辅助线程同时执行同样的 GC 工作，这样可以让辅助线程来分担主线程的 GC 工作，使得垃圾回收所耗费的时间等于总时间除以参与的线程数量（加上一些同步开销）。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670851771272-d5454f1b-90b5-4cbd-83bb-8d1805c9bce1.png#averageHue=%23f6f6f6&clientId=u8f053162-afe4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=139&id=ue342693c&margin=%5Bobject%20Object%5D&name=image.png&originHeight=139&originWidth=608&originalType=binary&ratio=1&rotation=0&showTitle=false&size=52245&status=done&style=none&taskId=ucd478771-10dc-4006-83a3-1f89d520c4e&title=&width=608)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670851771272-d5454f1b-90b5-4cbd-83bb-8d1805c9bce1.png#averageHue=%23f6f6f6&clientId=u8f053162-afe4-4&from=paste&height=139&id=ue342693c&originHeight=139&originWidth=608&originalType=binary&ratio=1&rotation=0&showTitle=false&size=52245&status=done&style=none&taskId=ucd478771-10dc-4006-83a3-1f89d520c4e&title=&width=608)
 
 ### V8 当前的垃圾回收机制
 
@@ -152,13 +152,13 @@ orinoco 是 V8 的垃圾回收器的项目代号，为了提升用户体验，�
 #### 副垃圾回收器
 
 V8 在新生代垃圾回收中，使用并行（parallel）机制，在整理排序阶段，也就是将活动对象从 from-to 复制到`space-to`时，启用多个辅助线程，并行的进行整理。由于多个线程竞争一个新生代的堆的内存资源，可能出现有某个活动对象被多个线程进行复制操作的问题，为了解决这个问题，V8 在第一个线程对活动对象进行复制并且复制完成后，都必须去维护这个活动对象后的指针转发地址，以便于其他协助线程可以找到该活动对象后可以判断该活动对象是否已被复制。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670852581283-0012ecbd-7021-4bfa-bf9b-64bd4ee61947.png#averageHue=%23f6f6f6&clientId=u8f053162-afe4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=142&id=u33593aab&margin=%5Bobject%20Object%5D&name=image.png&originHeight=142&originWidth=614&originalType=binary&ratio=1&rotation=0&showTitle=false&size=52347&status=done&style=none&taskId=u46c50273-8903-4249-a83f-795e67d5c8a&title=&width=614)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670852581283-0012ecbd-7021-4bfa-bf9b-64bd4ee61947.png#averageHue=%23f6f6f6&clientId=u8f053162-afe4-4&from=paste&height=142&id=u33593aab&originHeight=142&originWidth=614&originalType=binary&ratio=1&rotation=0&showTitle=false&size=52347&status=done&style=none&taskId=u46c50273-8903-4249-a83f-795e67d5c8a&title=&width=614)
 
 #### 主垃圾回收器
 
 V8 在老生代垃圾回收中，如果堆中的内存大小超过某个阈值后，会启用并发（Concurrent）标记任务。每个辅助线程都会去追踪每个标记到的对象的指针以及对这个对象的引用，而在 JS 代码执行时，并发标记也在后台的辅助进程中进行，当堆中的某个对象指针被 JS 代码修改时，`写屏障`技术在辅助线程在进行并发标记时进行追踪。
 当并发标记完成或动态分配的内存达到极限时，主线程会执行最终的快速标记步骤，这时主线程会挂起，主线程会再一次的扫描根集以确保所有的对象都完成了标记，由于辅助线程已经标记过活动对象，主线程的本次扫描只是进行 check 操作，确认操作完成后，某些辅助线程会进行清理内存操作，某些辅助线程会进行内存整理操作，由于都是并发的，并不会影响主线程 JS 代码的执行。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670891665363-ab526d91-530b-485d-a461-ebfd7da717ef.png#averageHue=%23eaf5dc&clientId=u8f053162-afe4-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=160&id=u97b0bb01&margin=%5Bobject%20Object%5D&name=image.png&originHeight=160&originWidth=680&originalType=binary&ratio=1&rotation=0&showTitle=false&size=66145&status=done&style=none&taskId=ua5f38ef3-e648-452a-bada-462d2332057&title=&width=680)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1670891665363-ab526d91-530b-485d-a461-ebfd7da717ef.png#averageHue=%23eaf5dc&clientId=u8f053162-afe4-4&from=paste&height=160&id=u97b0bb01&originHeight=160&originWidth=680&originalType=binary&ratio=1&rotation=0&showTitle=false&size=66145&status=done&style=none&taskId=ua5f38ef3-e648-452a-bada-462d2332057&title=&width=680)
 
 ### 问题及解答
 

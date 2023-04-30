@@ -437,7 +437,7 @@ else {
 ### LRU 算法
 
 LRU（最近最少使用）算法根据数据的历史访问记录来进行淘汰数据，其核心思想是“如果数据最近被访问过 ，那么将来被访问的几率也更高”。
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1669539855977-f44fffe7-d88d-4394-9221-e3ddcd65fec3.png#averageHue=%23f3f3f3&clientId=ubef7bb93-9c10-4&crop=0&crop=0&crop=1&crop=1&from=paste&id=ueca676fc&margin=%5Bobject%20Object%5D&name=image.png&originHeight=438&originWidth=1202&originalType=url&ratio=1&rotation=0&showTitle=false&size=32668&status=done&style=none&taskId=uc61d75db-aac1-4286-bf09-c689a4bfffd&title=)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1669539855977-f44fffe7-d88d-4394-9221-e3ddcd65fec3.png#averageHue=%23f3f3f3&clientId=ubef7bb93-9c10-4&from=paste&id=ueca676fc&originHeight=438&originWidth=1202&originalType=url&ratio=1&rotation=0&showTitle=false&size=32668&status=done&style=none&taskId=uc61d75db-aac1-4286-bf09-c689a4bfffd&title=)
 
 1. 将新数据从尾部插入到 this.keys 中；
 2. 每当缓存命中（即缓存数据被访问），则将数据移到 this.keys 的尾部。

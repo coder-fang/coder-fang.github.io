@@ -277,7 +277,7 @@ console.log(obj[_password]);
 ```
 
 输出如下：
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1668653745915-fc9503cf-b3b8-4973-b078-26b09f69ba22.png#averageHue=%23212121&clientId=u2b09cbdb-2331-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=116&id=u196ca470&margin=%5Bobject%20Object%5D&name=image.png&originHeight=245&originWidth=583&originalType=binary&ratio=1&rotation=0&showTitle=false&size=46307&status=done&style=none&taskId=uda6b3e15-79e2-4aa7-982d-49fe7eb8eb8&title=&width=275)
+![image.png](https://cdn.nlark.com/yuque/0/2022/png/2324645/1668653745915-fc9503cf-b3b8-4973-b078-26b09f69ba22.png#averageHue=%23212121&clientId=u2b09cbdb-2331-4&from=paste&height=116&id=u196ca470&originHeight=245&originWidth=583&originalType=binary&ratio=1&rotation=0&showTitle=false&size=46307&status=done&style=none&taskId=uda6b3e15-79e2-4aa7-982d-49fe7eb8eb8&title=&width=275)
 
 ### Symbol 自带的方法
 
