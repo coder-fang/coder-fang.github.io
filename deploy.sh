@@ -1,6 +1,7 @@
 #!/bin/bash
 echo 
 # cd F:\hexo-blog\Hexo
+
 # npm start
 hexo clean
 hexo g
