@@ -94,12 +94,12 @@ type: link
                </div>
             </div>
             <div class="card">
-               <img class="ava" src="https://source.catrol.cn/icons/headIcon.jpg" />
+               <img class="ava" src="https://img.catrol.cn/avatar/avatar-head-only.jpg" />
                <div class="card-header">
                   <div class="name">
-                     <a href="https://blog.catrol.cn/">常青园晚</a>
+                     <a href="https://blog.catrol.cn/">醉月 の 酿酒屋</a>
                   </div>
-                  <div class="info">高中小菜鸡，喜欢编程，打游戏以及学习（不是）。</div>
+                  <div class="info">就在这里发电</div>
                </div>
             </div>
             <div class="card">
